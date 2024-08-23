@@ -4,4 +4,5 @@ import com.won.StoreManageMent.auth.dto.JwtPayLoadDto.Playload;
 
 public interface JwtService {
     public String createToken(Playload playload);
+    public String checkToken(String token);
 }

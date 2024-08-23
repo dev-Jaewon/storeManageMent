@@ -37,5 +37,10 @@ public class NaverAuthController {
 
         return jwtService.createToken(jwtPlayLoad);
     }
-    
+
+    @GetMapping("/check")
+    public String checkAuthToken(@RequestParam("token") String token){
+
+        return jwtService.checkToken(token);
+    }
 }
