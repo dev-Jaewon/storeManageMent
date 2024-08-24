@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import lombok.AllArgsConstructor;
-import lombok.Setter;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 public class CoupangDto {
 
@@ -133,5 +133,84 @@ public class CoupangDto {
         private String personalCustomsClearanceCode;
         private String ordererSsn;
         private String ordererPhoneNumber;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ResponseReturnInfo {
+        private String type;
+        private ArrayList<ReturnData> data;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ReturnInfo {
+        private long code;
+        private String message;
+        private ArrayList<ReturnData> data;
+        private String nextToken;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class ReturnData {
+        private long receiptId;
+        private long orderId;
+        private long paymentId;
+        private String receiptType;
+        private String receiptStatus;
+        private String createdAt;
+        private String modifiedAt;
+        private String requesterName;
+        private String requesterPhoneNumber;
+        private String requesterRealPhoneNumber;
+        private String requesterAddress;
+        private String requesterAddressDetail;
+        private String requesterZipCode;
+        private String cancelReasonCategory1;
+        private String cancelReasonCategory2;
+        private int cancelCountSum;
+        private long returnDeliveryId;
+        private String returnDeliveryType;
+        private String releaseStopStatus;
+        private int enclosePrice;
+        private String faultByType;
+        private boolean preRefund;
+        private String completeConfirmType;
+        private String completeConfirmDate;
+        private ArrayList<ReturnItem> returnItems;
+        private ArrayList<ReturnDeliveryDtos> returnDeliveryDtos;
+        private String reasonCode;
+        private String reasonCodeText;
+        private long returnShippingCharge;
+        private String nextToken;
+
+        @Getter
+        @Setter
+        public static class ReturnItem {
+            private long vendorItemPackageId;
+            private String vendorItemPackageName;
+            private long vendorItemId;
+            private String vendorItemName;
+            private int cancelCount;
+            private int purchaseCount;
+            private long shipmentBoxId;
+            private long sellerProductId;
+            private String sellerProductName;
+            private String releaseStatus;
+            private String cancelCompleteUser;
+        }
+
+        @Getter
+        @Setter
+        public static class ReturnDeliveryDtos {
+            private String deliveryCompanyCode;
+            private String deliveryInvoiceNo;
+        }
     }
 }

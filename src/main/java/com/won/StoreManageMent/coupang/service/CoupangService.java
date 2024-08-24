@@ -2,8 +2,9 @@ package com.won.StoreManageMent.coupang.service;
 
 import java.util.List;
 
-import com.won.StoreManageMent.coupang.dto.CoupangDto.ResponseOrderInfo;
+import com.won.StoreManageMent.coupang.dto.CoupangDto;
 
 public interface CoupangService {
-    public List<ResponseOrderInfo> getOrders(String status);
+    public List<CoupangDto.ResponseOrderInfo> getOrders();
+    public List<CoupangDto.ResponseReturnInfo> getReturns();
 }
