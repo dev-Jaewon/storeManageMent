@@ -14,6 +14,16 @@ public class CoupangDto {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class ResponseCoupangInfo {
+        private ResponseOrderInfo order;
+    }
+
+    
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class ResponseOrderInfo {
         private String type;
         private ArrayList<OrderData> data;

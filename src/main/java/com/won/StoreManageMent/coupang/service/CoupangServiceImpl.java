@@ -9,7 +9,11 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,6 +22,7 @@ import com.coupang.openapi.sdk.Hmac;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.won.StoreManageMent.coupang.dto.CoupangDto;
+import com.won.StoreManageMent.coupang.dto.CoupangDto.ResponseOrderInfo;
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,9 +44,30 @@ public class CoupangServiceImpl implements CoupangService {
     @Value("${coupang.access_key}")
     private String ACCESS_KEY;
 
-
     @Override
-    public CompletableFuture<ArrayList<CoupangDto.OrderData>> getOrders(String status){
+    public List<ResponseOrderInfo> getOrders(String status){
+        List<String> ENG_STATUS = Arrays.asList("ACCEPT", "INSTRUCT", "DEPARTURE", "DELIVERING", "FINAL_DELIVERY", "NONE_TRACKING");
+        List<String> KOR_STATUS = Arrays.asList("결제완료", "상품준비중", "배송지시", "배송중", "배송완료", "직접배송");
+
+        List<CompletableFuture<ArrayList<CoupangDto.OrderData>>> orderRequest = ENG_STATUS.stream()
+                    .map(this::RequestOrder)
+                    .collect(Collectors.toList());
+
+        CompletableFuture<Void> allFutures = CompletableFuture.allOf(orderRequest.stream()
+                    .toArray(CompletableFuture<?>[]::new));
+
+        List<ArrayList<CoupangDto.OrderData>> statusList = allFutures.thenApply(v -> orderRequest.stream()
+                    .map(CompletableFuture::join)
+                    .collect(Collectors.toList()))
+                    .join();
+
+        return IntStream.range(0, statusList.size())
+                    .mapToObj(i -> new ResponseOrderInfo(KOR_STATUS.get(i), statusList.get(i)))
+                    .collect(Collectors.toList());
+    }
+
+
+    private CompletableFuture<ArrayList<CoupangDto.OrderData>> RequestOrder(String status){
 
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime beforeDate = now.minus(31, ChronoUnit.DAYS);

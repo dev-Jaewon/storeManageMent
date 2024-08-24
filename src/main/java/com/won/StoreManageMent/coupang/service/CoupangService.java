@@ -1,10 +1,9 @@
 package com.won.StoreManageMent.coupang.service;
 
-import java.util.ArrayList;
-import java.util.concurrent.CompletableFuture;
+import java.util.List;
 
-import com.won.StoreManageMent.coupang.dto.CoupangDto;
+import com.won.StoreManageMent.coupang.dto.CoupangDto.ResponseOrderInfo;
 
 public interface CoupangService {
-    public CompletableFuture<ArrayList<CoupangDto.OrderData>> getOrders(String status);
+    public List<ResponseOrderInfo> getOrders(String status);
 }
