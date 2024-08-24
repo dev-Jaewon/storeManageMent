@@ -1,6 +1,5 @@
 package com.won.StoreManageMent.coupang.service;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
@@ -9,11 +8,14 @@ import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.coupang.openapi.sdk.Hmac;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.won.StoreManageMent.coupang.dto.CoupangDto;
 
@@ -39,7 +41,7 @@ public class CoupangServiceImpl implements CoupangService {
 
 
     @Override
-    public CoupangDto.OrderInfo getOrders(){
+    public CompletableFuture<ArrayList<CoupangDto.OrderData>> getOrders(String status){
 
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime beforeDate = now.minus(31, ChronoUnit.DAYS);
@@ -50,7 +52,7 @@ public class CoupangServiceImpl implements CoupangService {
         String path = "/v2/providers/openapi/apis/api/v4/vendors/" + VENDER_ID +
                       "/ordersheets?createdAtFrom=" + beforeDate.format(formatter) +
                       "&createdAtTo=" + now.format(formatter) +
-                      "&status=" + "FINAL_DELIVERY";
+                      "&status=" + status;
 
         try {
 
@@ -63,15 +65,24 @@ public class CoupangServiceImpl implements CoupangService {
                         .GET()
                         .build();
 
-            String res = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
-
-            ObjectMapper objectMapper = new ObjectMapper();
-            CoupangDto.OrderInfo orderInfo = objectMapper.readValue(res, CoupangDto.OrderInfo.class);
-
-            return orderInfo;
+            return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                        .thenApply(response -> {
+                            try {
+                                
+                                ObjectMapper objectMapper = new ObjectMapper();
+                                CoupangDto.OrderInfo orderInfo = objectMapper.readValue(response.body(), CoupangDto.OrderInfo.class);
+                                
+                                return orderInfo.getData();
+                            } catch (JsonProcessingException e) {
+                                return new ArrayList<CoupangDto.OrderData>();
+                            }
+                        })
+                        .exceptionally(e -> {
+                            return new ArrayList<>();
+                        });
             
-        } catch (RuntimeException | URISyntaxException | IOException | InterruptedException e) {
-            return new CoupangDto.OrderInfo();
+        } catch (RuntimeException | URISyntaxException e) {
+            return CompletableFuture.completedFuture(new ArrayList<>());
         }
     }
 

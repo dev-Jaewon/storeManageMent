@@ -3,11 +3,21 @@ package com.won.StoreManageMent.coupang.dto;
 import java.util.ArrayList;
 import java.util.Map;
 
+import lombok.AllArgsConstructor;
 import lombok.Setter;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 public class CoupangDto {
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ResponseOrderInfo {
+        private String type;
+        private ArrayList<OrderData> data;
+    }
 
     @Getter
     @Setter
@@ -21,7 +31,8 @@ public class CoupangDto {
 
     @Getter
     @Setter
-    private static class OrderData {
+    @NoArgsConstructor
+    public static class OrderData {
         private long shipmentBoxId;
         private long orderId;
         private String orderedAt;
