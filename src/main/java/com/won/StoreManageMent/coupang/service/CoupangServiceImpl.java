@@ -17,9 +17,14 @@ import com.coupang.openapi.sdk.Hmac;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.won.StoreManageMent.coupang.dto.CoupangDto;
 
+import lombok.RequiredArgsConstructor;
+
 
 @Service
+@RequiredArgsConstructor
 public class CoupangServiceImpl implements CoupangService {
+
+    private final HttpClient httpClient;
     
     private final String URL = "https://api-gateway.coupang.com";
     
@@ -31,8 +36,6 @@ public class CoupangServiceImpl implements CoupangService {
 
     @Value("${coupang.access_key}")
     private String ACCESS_KEY;
-    
-
 
 
     @Override
@@ -51,8 +54,6 @@ public class CoupangServiceImpl implements CoupangService {
 
         try {
 
-            HttpClient client = HttpClient.newHttpClient();
-
             String authorization = getAuth(method, path);
 
             HttpRequest request = HttpRequest.newBuilder()
@@ -62,7 +63,7 @@ public class CoupangServiceImpl implements CoupangService {
                         .GET()
                         .build();
 
-            String res = client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+            String res = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
 
             ObjectMapper objectMapper = new ObjectMapper();
             CoupangDto.OrderInfo orderInfo = objectMapper.readValue(res, CoupangDto.OrderInfo.class);
