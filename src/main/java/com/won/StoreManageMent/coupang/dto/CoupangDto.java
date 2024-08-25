@@ -3,6 +3,10 @@ package com.won.StoreManageMent.coupang.dto;
 import java.util.ArrayList;
 import java.util.Map;
 
+import com.won.StoreManageMent.coupang.dto.CoupangDto.ExchangeData.DeliveryInvoiceGroupDtos;
+import com.won.StoreManageMent.coupang.dto.CoupangDto.ExchangeData.ExchangeAddressDtoV1;
+import com.won.StoreManageMent.coupang.dto.CoupangDto.ExchangeData.ExchangeItemDtoV1s;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -211,6 +215,211 @@ public class CoupangDto {
         public static class ReturnDeliveryDtos {
             private String deliveryCompanyCode;
             private String deliveryInvoiceNo;
+        }
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ResponseExchangeInfo {
+        private String type;
+        private ArrayList<ExchangeData> data;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class ExchangeInfo{
+        private long code;
+        private String message;
+        private ArrayList<ExchangeData> data;
+        private String nextToken;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class ExchangeData {
+        private long exchangeId;
+        private long orderId;
+        private String vendorId;
+        private String orderDeliveryStatusCode;
+        private String exchangeStatus;
+        private String referType;
+        private String faultType;
+        private String exchangeAmount;
+        private String reason;
+        private String reasonCode;
+        private String reasonCodeText;
+        private String reasonEtcDetail;
+        private String cancelReason;
+        private String createdByType;
+        private String createdAt;
+        private String modifiedByType;
+        private String modifiedAt;
+        private ArrayList<ExchangeItemDtoV1s> exchangeItemDtoV1s;
+        private ExchangeAddressDtoV1 exchangeAddressDtoV1;
+        private DeliveryInvoiceGroupDtos deliveryInvoiceGroupDtos;
+        private String deliveryStatus;
+        private String collectStatus;
+        private String collectCompleteDate;
+        private CollectInformationsDto collectInformationsDto;
+        private ReturnDeliveryDtos returnDeliveryDtos;
+        private boolean successable;
+        private String orderDeliveryStatusLabel;
+        private String exchangeStatusLabel;
+        private String referTypeLabel;
+        private String faultTypeLabel;
+        private String createdByTypeLabel;
+        private boolean rejectable;
+        private String modifiedByTypeLabel;
+        private boolean deliveryInvoiceModifiable;
+
+        @Getter
+        @Setter
+        public static class ReturnDeliveryDtos{
+            private String deliveryCompanyCode;
+            private String deliveryInvoiceNo;
+        }
+
+        @Getter
+        @Setter
+        public static class CollectInformationsDto{
+            private String returnType;
+            private String expectedReturnDate;
+            private ArrayList<ReturndeliveryItemDtos> returndeliveryItemDtos;
+            private ReturndeliveryDestinationDto returndeliveryDestinationDto;
+
+            @Getter
+            @Setter
+            public static class ReturndeliveryItemDtos{
+                private long vendorItemId;
+                private String statusCode;
+                private int returnCount;
+                private String releaseStatus;
+                private long paymentReturnDeliveryMapId;
+                private long paymentItemId;
+                private String modifiedBy;
+                private String modifiedAt;
+                private String createdBy;
+                private String createdAt;
+                private int count;
+                private String confirmType;
+                private String collectStatus;
+            }
+
+            @Getter
+            @Setter
+            public static class ReturndeliveryDestinationDto {
+                private String vendorZipCode;
+                private String vendorPhone;
+                private String vendorName;
+                private String vendorMobile;
+                private String vendorAddressDetail;
+                private String vendorAddress;
+                private String safetyNumberStatus;
+                private long safetyNumberId;
+                private String safetyNumber;
+                private long returnDeliveryId;
+                private String returnCenterCode;
+                private long receiptId;
+                private String orderedByMobile;
+                private long orderId;
+                private String message;
+                private String customerZipCode;
+                private String customerPhone;
+                private String customerName;
+                private String customerMobile;
+                private String customerAddressDetail;
+                private String customerAddress;
+
+            }
+        }
+
+        @Getter
+        @Setter
+        public static class ExchangeItemDtoV1s{
+            private long exchangeItemId;
+            private long orderItemId;
+            private int orderItemUnitPrice;
+            private String orderItemName;
+            private long orderPackageId;
+            private String orderPackageName;
+            private long targetItemId;
+            private int targetItemUnitPrice;
+            private String targetItemName;
+            private long targetPackageId;
+            private String targetPackageName;
+            private int quantity;
+            private boolean orderItemDeliveryComplete;
+            private boolean orderItemReturnComplete;
+            private boolean targetItemDeliveryComplete;
+            private String createdAt;
+            private String modifiedAt;
+            private long originalShipmentBoxId;
+        }
+
+        @Getter
+        @Setter
+        public static class ExchangeAddressDtoV1{
+            private long exchangeAddressId;
+            private String returnCustomerName;
+            private String returnAddressZipCode;
+            private String returnAddress;
+            private String returnAddressDetail;
+            private String returnPhone;
+            private String returnMobile;
+            private String returnMemo;
+            private String deliveryCustomerName;
+            private String deliveryAddressZipCode;
+            private String deliveryAddress;
+            private String deliveryAddressDetail;
+            private String deliveryPhone;
+            private String deliveryMobile;
+            private String deliveryMemo;
+            private String createdAt;
+            private String modifiedAt;
+            private long exchangeId;
+        }
+
+        @Getter
+        @Setter
+        public static class DeliveryInvoiceGroupDtos{
+            private long shipmentBoxId;
+            private int boxPrice;
+            private long orderId;
+            private String orderType;
+            private String customerType;
+            private String bundleType;
+            private String extraMessage;        
+            private String shippingDeliveryType;
+            private ArrayList<DeliveryInvoiceDtos> deliveryInvoiceDtos;
+
+            @Getter
+            @Setter
+            public static class DeliveryInvoiceDtos{
+                private String invoiceNumber;
+                private String estimatedDeliveryDate;
+                private String deliveredDate;
+                private String statusModifiedAt;
+                private String invoiceNumberUploadDate;
+                private String statusCode;
+                private String deliverCode;
+                private boolean isMainShipmentInvoice;
+                private String parcelType;
+                private ArrayList<InvoiceVendorItemDtos> invoiceVendorItemDtos;
+
+                @Getter
+                @Setter
+                public static class InvoiceVendorItemDtos{
+                    private long vendorItemId;
+                    private int quantity;
+                    private boolean hasAdditionalItem;
+                    private String promiseDeliveryDate;
+                    private String estimatedShippingDate;
+                }
+            }
         }
     }
 }

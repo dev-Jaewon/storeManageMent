@@ -76,6 +76,21 @@ public class CoupangServiceImpl implements CoupangService {
                         .collect(Collectors.toList());
     }
 
+    @Override
+    public List<CoupangDto.ResponseExchangeInfo> getExchange(){
+        List<String> ENG_STATUS = Arrays.asList("RECEIPT");
+        List<String> KOR_STATUS = Arrays.asList("교환");
+
+        List<ArrayList<CoupangDto.ExchangeData>> statusList = requestCouPangInfo(
+                ENG_STATUS,
+                this::requestExchange
+        );
+
+        return IntStream.range(0, KOR_STATUS.size())
+                        .mapToObj(i -> new CoupangDto.ResponseExchangeInfo(KOR_STATUS.get(i), statusList.get(i)))
+                        .collect(Collectors.toList());
+    }
+
 
     private <T> List<ArrayList<T>> requestCouPangInfo(
             List<String> engStatus,
@@ -173,6 +188,50 @@ public class CoupangServiceImpl implements CoupangService {
                                 return returnInfo.getData();
                             } catch (JsonProcessingException e) {
                                 return new ArrayList<CoupangDto.ReturnData>();
+                            }
+                        })
+                        .exceptionally(e -> {
+                            return new ArrayList<>();
+                        });
+            
+        } catch (RuntimeException | URISyntaxException e) {
+            return CompletableFuture.completedFuture(new ArrayList<>());
+        }
+    }
+
+    private CompletableFuture<ArrayList<CoupangDto.ExchangeData>> requestExchange(String status){
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime beforeDate = now.minus(7, ChronoUnit.DAYS);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+
+        String method = "GET";
+        String path = "/v2/providers/openapi/apis/api/v4/vendors/" + VENDER_ID +
+                      "/exchangeRequests?createdAtFrom=" + beforeDate.format(formatter) +
+                      "&createdAtTo=" + now.format(formatter) +
+                      "&status=" + status;
+
+
+        try {
+
+            String authorization = getAuth(method, path);
+
+            HttpRequest request = HttpRequest.newBuilder()
+                        .uri(new URI(URL + path))
+                        .header("Authorization", authorization)
+                        .header("content-type", "application/json;charset=UTF-8")
+                        .GET()
+                        .build();
+
+            return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                        .thenApply(response -> {
+                            try {
+                                ObjectMapper objectMapper = new ObjectMapper();
+                                CoupangDto.ExchangeInfo exchangeInfo = objectMapper.readValue(response.body(), CoupangDto.ExchangeInfo.class);
+                                
+                                return exchangeInfo.getData();
+                            } catch (JsonProcessingException e) {
+                                return new ArrayList<CoupangDto.ExchangeData>();
                             }
                         })
                         .exceptionally(e -> {
