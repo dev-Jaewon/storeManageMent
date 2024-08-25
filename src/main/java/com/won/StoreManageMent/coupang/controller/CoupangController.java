@@ -6,14 +6,17 @@ import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.won.StoreManageMent.coupang.dto.CoupangCategoryDto;
 import com.won.StoreManageMent.coupang.dto.CoupangDto.ResponseCoupangInfo;
 import com.won.StoreManageMent.coupang.dto.CoupangDto.ResponseExchangeInfo;
 import com.won.StoreManageMent.coupang.dto.CoupangDto.ResponseOnlineInquiriesInfo;
 import com.won.StoreManageMent.coupang.dto.CoupangDto.ResponseOrderInfo;
 import com.won.StoreManageMent.coupang.dto.CoupangDto.ResponseReturnInfo;
+import com.won.StoreManageMent.coupang.service.CoupangMetaDataService;
 import com.won.StoreManageMent.coupang.service.CoupangService;
 
 
@@ -24,6 +27,9 @@ public class CoupangController {
 
     @Autowired
     private CoupangService coupangService;
+
+    @Autowired
+    private CoupangMetaDataService coupangMetaDataService;
     
     @GetMapping("/info")
     public ResponseCoupangInfo orderInfo() {
@@ -50,5 +56,9 @@ public class CoupangController {
         }).join();
         
     }
-    
+
+    @GetMapping("/category/{code}")
+    public CoupangCategoryDto.CategoryData getCategoryMetaData(@PathVariable("code") String code) {
+        return coupangMetaDataService.getCategoryData(code);
+    }
 }
