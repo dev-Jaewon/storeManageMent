@@ -91,6 +91,21 @@ public class CoupangServiceImpl implements CoupangService {
                         .collect(Collectors.toList());
     }
 
+    @Override
+    public List<CoupangDto.ResponseOnlineInquiriesInfo> getOnlineInquiries(){
+        List<String> ENG_STATUS = Arrays.asList("ALL");
+        List<String> KOR_STATUS = Arrays.asList("모두");
+
+        List<ArrayList<CoupangDto.OnlineInquiriesData>> statusList = requestCouPangInfo(
+                ENG_STATUS,
+                this::requestoOlineInquiries
+        );
+
+        return IntStream.range(0, KOR_STATUS.size())
+                        .mapToObj(i -> new CoupangDto.ResponseOnlineInquiriesInfo(KOR_STATUS.get(i), statusList.get(i)))
+                        .collect(Collectors.toList());
+    }
+
 
     private <T> List<ArrayList<T>> requestCouPangInfo(
             List<String> engStatus,
@@ -232,6 +247,51 @@ public class CoupangServiceImpl implements CoupangService {
                                 return exchangeInfo.getData();
                             } catch (JsonProcessingException e) {
                                 return new ArrayList<CoupangDto.ExchangeData>();
+                            }
+                        })
+                        .exceptionally(e -> {
+                            return new ArrayList<>();
+                        });
+            
+        } catch (RuntimeException | URISyntaxException e) {
+            return CompletableFuture.completedFuture(new ArrayList<>());
+        }
+    }
+
+    private CompletableFuture<ArrayList<CoupangDto.OnlineInquiriesData>> requestoOlineInquiries(String status){
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime beforeDate = now.minus(6, ChronoUnit.DAYS);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        String method = "GET";
+        String path = "/v2/providers/openapi/apis/api/v4/vendors/" + VENDER_ID +
+                      "/onlineInquiries?inquiryStartAt=" + beforeDate.format(formatter) +
+                      "&inquiryEndAt=" + now.format(formatter) +
+                      "&vendorId=" + VENDER_ID +
+                      "&answeredType=" + status;
+
+
+        try {
+
+            String authorization = getAuth(method, path);
+
+            HttpRequest request = HttpRequest.newBuilder()
+                        .uri(new URI(URL + path))
+                        .header("Authorization", authorization)
+                        .header("content-type", "application/json;charset=UTF-8")
+                        .GET()
+                        .build();
+
+            return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                        .thenApply(response -> {
+                            try {
+                                ObjectMapper objectMapper = new ObjectMapper();
+                                CoupangDto.OnlineInquiriesInfo exchangeInfo = objectMapper.readValue(response.body(), CoupangDto.OnlineInquiriesInfo.class);
+                                
+                                return exchangeInfo.getData();
+                            } catch (JsonProcessingException e) {
+                                return new ArrayList<CoupangDto.OnlineInquiriesData>();
                             }
                         })
                         .exceptionally(e -> {

@@ -3,10 +3,6 @@ package com.won.StoreManageMent.coupang.dto;
 import java.util.ArrayList;
 import java.util.Map;
 
-import com.won.StoreManageMent.coupang.dto.CoupangDto.ExchangeData.DeliveryInvoiceGroupDtos;
-import com.won.StoreManageMent.coupang.dto.CoupangDto.ExchangeData.ExchangeAddressDtoV1;
-import com.won.StoreManageMent.coupang.dto.CoupangDto.ExchangeData.ExchangeItemDtoV1s;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -419,6 +415,66 @@ public class CoupangDto {
                     private String promiseDeliveryDate;
                     private String estimatedShippingDate;
                 }
+            }
+        }
+    }
+
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ResponseOnlineInquiriesInfo {
+        private String type;
+        private ArrayList<OnlineInquiriesData> data;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class OnlineInquiriesInfo{
+        private long code;
+        private String message;
+        private ArrayList<OnlineInquiriesData> data;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class OnlineInquiriesData {
+        private OnlineInquiriesContent content;
+        private Pagination pagination;
+
+        @Getter
+        @Setter
+        public static class Pagination {
+            private int currentPage;
+            private int totalPages;
+            private int totalElements;
+            private int countPerPage;
+        }
+
+        @Getter
+        @Setter
+        public static class OnlineInquiriesContent{
+            private long inquiryId;
+ 	 	    private long productId;
+ 	 	    private long sellerProductId;
+ 	 	    private long sellerItemId;
+ 	 	    private long vendorItemId;
+ 	 	    private String content;
+ 	 	    private String inquiryAt;
+ 	 	    private ArrayList<Long> orderIds;
+ 	 	    private String buyerEmail;
+ 	 	    private ArrayList<CommentDtoList> commentDtoList;
+
+            @Getter
+            @Setter
+            public static class CommentDtoList{
+                private long inquiryCommentId;
+                private long inquiryId;
+                private String content;
+                private String inquiryCommentAt;
             }
         }
     }

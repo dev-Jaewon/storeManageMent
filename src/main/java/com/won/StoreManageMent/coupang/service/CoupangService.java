@@ -8,4 +8,5 @@ public interface CoupangService {
     public List<CoupangDto.ResponseOrderInfo> getOrders();
     public List<CoupangDto.ResponseReturnInfo> getReturns();
     public List<CoupangDto.ResponseExchangeInfo> getExchange();
+    public List<CoupangDto.ResponseOnlineInquiriesInfo> getOnlineInquiries();
 }
