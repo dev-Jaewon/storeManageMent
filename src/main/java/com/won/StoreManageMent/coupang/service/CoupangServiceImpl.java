@@ -124,6 +124,32 @@ public class CoupangServiceImpl implements CoupangService {
                     .join();
     }
 
+    private <T> CompletableFuture<ArrayList<T>> requestApi(
+        String method,
+        String path,
+        Function<HttpResponse<String>,
+        ArrayList<T>> parseData){
+
+        String authorization = getAuth(method, path);
+
+        try {
+
+            HttpRequest request = HttpRequest.newBuilder()
+                        .uri(new URI(URL + path))
+                        .header("Authorization", authorization)
+                        .header("content-type", "application/json;charset=UTF-8")
+                        .GET()
+                        .build();
+
+            return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                        .thenApply(parseData)
+                        .exceptionally(e -> new ArrayList<>());
+            
+        } catch (RuntimeException | URISyntaxException e) {
+            return CompletableFuture.completedFuture(new ArrayList<>());
+        }
+    }
+
 
     private CompletableFuture<ArrayList<CoupangDto.OrderData>> requestOrder(String status){
 
@@ -138,36 +164,16 @@ public class CoupangServiceImpl implements CoupangService {
                       "&createdAtTo=" + now.format(formatter) +
                       "&status=" + status;
 
-        try {
-
-            String authorization = getAuth(method, path);
-
-            HttpRequest request = HttpRequest.newBuilder()
-                        .uri(new URI(URL + path))
-                        .header("Authorization", authorization)
-                        .header("content-type", "application/json;charset=UTF-8")
-                        .GET()
-                        .build();
-
-            return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                        .thenApply(response -> {
-                            try {
-                                
-                                ObjectMapper objectMapper = new ObjectMapper();
-                                CoupangDto.OrderInfo orderInfo = objectMapper.readValue(response.body(), CoupangDto.OrderInfo.class);
-                                
-                                return orderInfo.getData();
-                            } catch (JsonProcessingException e) {
-                                return new ArrayList<CoupangDto.OrderData>();
-                            }
-                        })
-                        .exceptionally(e -> {
-                            return new ArrayList<>();
-                        });
-            
-        } catch (RuntimeException | URISyntaxException e) {
-            return CompletableFuture.completedFuture(new ArrayList<>());
-        }
+        return requestApi(
+            method,
+            path, 
+            response -> {
+                try {
+                    return new ObjectMapper().readValue(response.body(), CoupangDto.OrderInfo.class).getData();
+                } catch (JsonProcessingException e) {
+                    return new ArrayList<CoupangDto.OrderData>();
+                }
+            });
     }
 
     private CompletableFuture<ArrayList<CoupangDto.ReturnData>> requestReturn(String status){
@@ -182,36 +188,17 @@ public class CoupangServiceImpl implements CoupangService {
                       "&createdAtTo=" + now.format(formatter) +
                       "&status=UC&cancelType" + status;
 
-        try {
-
-            String authorization = getAuth(method, path);
-
-            HttpRequest request = HttpRequest.newBuilder()
-                        .uri(new URI(URL + path))
-                        .header("Authorization", authorization)
-                        .header("content-type", "application/json;charset=UTF-8")
-                        .GET()
-                        .build();
-
-            return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                        .thenApply(response -> {
-                            try {
-                                
-                                ObjectMapper objectMapper = new ObjectMapper();
-                                CoupangDto.ReturnInfo returnInfo = objectMapper.readValue(response.body(), CoupangDto.ReturnInfo.class);
-                                
-                                return returnInfo.getData();
-                            } catch (JsonProcessingException e) {
-                                return new ArrayList<CoupangDto.ReturnData>();
-                            }
-                        })
-                        .exceptionally(e -> {
-                            return new ArrayList<>();
-                        });
-            
-        } catch (RuntimeException | URISyntaxException e) {
-            return CompletableFuture.completedFuture(new ArrayList<>());
-        }
+        
+        return requestApi(
+            method,
+            path, 
+            response -> {
+                try {
+                    return new ObjectMapper().readValue(response.body(), CoupangDto.ReturnInfo.class).getData();
+                } catch (JsonProcessingException e) {
+                    return new ArrayList<CoupangDto.ReturnData>();
+                }
+            });
     }
 
     private CompletableFuture<ArrayList<CoupangDto.ExchangeData>> requestExchange(String status){
@@ -226,36 +213,16 @@ public class CoupangServiceImpl implements CoupangService {
                       "&createdAtTo=" + now.format(formatter) +
                       "&status=" + status;
 
-
-        try {
-
-            String authorization = getAuth(method, path);
-
-            HttpRequest request = HttpRequest.newBuilder()
-                        .uri(new URI(URL + path))
-                        .header("Authorization", authorization)
-                        .header("content-type", "application/json;charset=UTF-8")
-                        .GET()
-                        .build();
-
-            return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                        .thenApply(response -> {
-                            try {
-                                ObjectMapper objectMapper = new ObjectMapper();
-                                CoupangDto.ExchangeInfo exchangeInfo = objectMapper.readValue(response.body(), CoupangDto.ExchangeInfo.class);
-                                
-                                return exchangeInfo.getData();
-                            } catch (JsonProcessingException e) {
-                                return new ArrayList<CoupangDto.ExchangeData>();
-                            }
-                        })
-                        .exceptionally(e -> {
-                            return new ArrayList<>();
-                        });
-            
-        } catch (RuntimeException | URISyntaxException e) {
-            return CompletableFuture.completedFuture(new ArrayList<>());
-        }
+        return requestApi(
+            method,
+            path, 
+            response -> {
+                try {
+                    return new ObjectMapper().readValue(response.body(), CoupangDto.ExchangeInfo.class).getData();
+                } catch (JsonProcessingException e) {
+                    return new ArrayList<CoupangDto.ExchangeData>();
+                }
+            });
     }
 
     private CompletableFuture<ArrayList<CoupangDto.OnlineInquiriesData>> requestoOlineInquiries(String status){
@@ -271,36 +238,16 @@ public class CoupangServiceImpl implements CoupangService {
                       "&vendorId=" + VENDER_ID +
                       "&answeredType=" + status;
 
-
-        try {
-
-            String authorization = getAuth(method, path);
-
-            HttpRequest request = HttpRequest.newBuilder()
-                        .uri(new URI(URL + path))
-                        .header("Authorization", authorization)
-                        .header("content-type", "application/json;charset=UTF-8")
-                        .GET()
-                        .build();
-
-            return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                        .thenApply(response -> {
-                            try {
-                                ObjectMapper objectMapper = new ObjectMapper();
-                                CoupangDto.OnlineInquiriesInfo exchangeInfo = objectMapper.readValue(response.body(), CoupangDto.OnlineInquiriesInfo.class);
-                                
-                                return exchangeInfo.getData();
-                            } catch (JsonProcessingException e) {
-                                return new ArrayList<CoupangDto.OnlineInquiriesData>();
-                            }
-                        })
-                        .exceptionally(e -> {
-                            return new ArrayList<>();
-                        });
-            
-        } catch (RuntimeException | URISyntaxException e) {
-            return CompletableFuture.completedFuture(new ArrayList<>());
-        }
+        return requestApi(
+            method,
+            path, 
+            response -> {
+                try {
+                    return new ObjectMapper().readValue(response.body(), CoupangDto.OnlineInquiriesInfo.class).getData();
+                } catch (JsonProcessingException e) {
+                    return new ArrayList<CoupangDto.OnlineInquiriesData>();
+                }
+            });
     }
 
     private String getAuth(String method, String url){
