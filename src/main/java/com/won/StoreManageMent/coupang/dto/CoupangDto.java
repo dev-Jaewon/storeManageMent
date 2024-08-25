@@ -1,6 +1,7 @@
 package com.won.StoreManageMent.coupang.dto;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import lombok.AllArgsConstructor;
@@ -15,7 +16,10 @@ public class CoupangDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ResponseCoupangInfo {
-        private ResponseOrderInfo order;
+        private List<ResponseOrderInfo> orderInfo;
+        private List<ResponseReturnInfo> returnInfo;
+        private List<ResponseExchangeInfo> exchangeInfo;
+        private List<ResponseOnlineInquiriesInfo> onlineInquiriesInfo;
     }
 
     
