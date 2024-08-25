@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -50,17 +51,10 @@ public class CoupangServiceImpl implements CoupangService {
         List<String> ENG_STATUS = Arrays.asList("ACCEPT", "INSTRUCT", "DEPARTURE", "DELIVERING", "FINAL_DELIVERY", "NONE_TRACKING");
         List<String> KOR_STATUS = Arrays.asList("결제완료", "상품준비중", "배송지시", "배송중", "배송완료", "직접배송");
 
-        List<CompletableFuture<ArrayList<CoupangDto.OrderData>>> orderRequest = ENG_STATUS.stream()
-                    .map(status->requestOrder(status))
-                    .collect(Collectors.toList());
-
-        CompletableFuture<Void> allFutures = CompletableFuture.allOf(orderRequest.stream()
-                    .toArray(CompletableFuture<?>[]::new));
-
-        List<ArrayList<CoupangDto.OrderData>> statusList = allFutures.thenApply(v -> orderRequest.stream()
-                    .map(CompletableFuture::join)
-                    .collect(Collectors.toList()))
-                    .join();
+        List<ArrayList<CoupangDto.OrderData>> statusList = requestCouPangInfo(
+                ENG_STATUS,
+                this::requestOrder
+        );
 
         return IntStream.range(0, statusList.size())
                     .mapToObj(i -> new ResponseOrderInfo(KOR_STATUS.get(i), statusList.get(i)))
@@ -72,21 +66,32 @@ public class CoupangServiceImpl implements CoupangService {
         List<String> ENG_STATUS = Arrays.asList("CANCEL", "RETURN");
         List<String> KOR_STATUS = Arrays.asList("취소", "반품");
 
-        List<CompletableFuture<ArrayList<CoupangDto.ReturnData>>> orderRequest = ENG_STATUS.stream()
-                    .map(status->requestReturn(status))
+        List<ArrayList<CoupangDto.ReturnData>> statusList = requestCouPangInfo(
+                ENG_STATUS,
+                this::requestReturn
+        );
+
+        return IntStream.range(0, KOR_STATUS.size())
+                        .mapToObj(i -> new CoupangDto.ResponseReturnInfo(KOR_STATUS.get(i), statusList.get(i)))
+                        .collect(Collectors.toList());
+    }
+
+
+    private <T> List<ArrayList<T>> requestCouPangInfo(
+            List<String> engStatus,
+            Function<String, CompletableFuture<ArrayList<T>>> requestFunction){
+
+            List<CompletableFuture<ArrayList<T>>> requestFutures = engStatus.stream()
+                    .map(requestFunction)
                     .collect(Collectors.toList());
 
-        CompletableFuture<Void> allFutures = CompletableFuture.allOf(orderRequest.stream()
+            CompletableFuture<Void> allFutures = CompletableFuture.allOf(requestFutures.stream()
                     .toArray(CompletableFuture<?>[]::new));
 
-        List<ArrayList<CoupangDto.ReturnData>> statusList = allFutures.thenApply(v -> orderRequest.stream()
+            return allFutures.thenApply(v -> requestFutures.stream()
                     .map(CompletableFuture::join)
                     .collect(Collectors.toList()))
                     .join();
-
-        return IntStream.range(0, statusList.size())
-                    .mapToObj(i -> new CoupangDto.ResponseReturnInfo(KOR_STATUS.get(i), statusList.get(i)))
-                    .collect(Collectors.toList());
     }
 
 
