@@ -7,13 +7,25 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.won.StoreManageMent.auth.dto.NaverAuthDto;
+import com.won.StoreManageMent.auth.dto.PlatFormInfoDto;
+import com.won.StoreManageMent.auth.entity.AccountEntity;
+import com.won.StoreManageMent.auth.entity.PlatformInfoEntity;
+import com.won.StoreManageMent.auth.repository.AccountRepository;
+import com.won.StoreManageMent.auth.repository.PlatFormInfoRepository;
 
 @Service
 public class NaverAuthServiceImpl implements NaverAuthService {
+    
+    @Autowired
+    private AccountRepository accountRepository;
+
+    @Autowired
+    private PlatFormInfoRepository platFormInfoRepository;
 
     @Override
     public NaverAuthDto naverLogin(String token){
@@ -41,5 +53,23 @@ public class NaverAuthServiceImpl implements NaverAuthService {
             System.out.println(e);
             return new NaverAuthDto();
         }
+    }
+
+    @Override
+    public void insertAuthKeyInfo(PlatFormInfoDto.InsertFloatFormAuthKey insertFloatFormAuthKey){
+
+        AccountEntity account = accountRepository.findById(insertFloatFormAuthKey.getAccountId())
+                .orElseThrow(null);
+
+        if (account == null){
+            return;
+        }
+
+        PlatformInfoEntity platFormInfo = PlatformInfoEntity.builder()
+            .accountId(insertFloatFormAuthKey.getAccountId())
+            .option1(insertFloatFormAuthKey.getOption1())
+            .option2(insertFloatFormAuthKey.getOption2())
+            .build();
+
     }
 }
