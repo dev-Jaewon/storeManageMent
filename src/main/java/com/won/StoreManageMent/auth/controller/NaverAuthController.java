@@ -47,7 +47,7 @@ public class NaverAuthController {
         return jwtService.checkToken(token);
     }
 
-    @PostMapping("/floatForm")
+    @PostMapping("/flatForm")
     public void insertFloatFormAuthKeyInfo(@RequestBody PlatFormInfoDto.InsertFloatFormAuthKey insertFloatFormAuthKey){
         naverAuthService.insertAuthKeyInfo(insertFloatFormAuthKey);
     }

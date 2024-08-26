@@ -8,24 +8,35 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.won.StoreManageMent.auth.dto.NaverAuthDto;
 import com.won.StoreManageMent.auth.dto.PlatFormInfoDto;
 import com.won.StoreManageMent.auth.entity.AccountEntity;
-import com.won.StoreManageMent.auth.entity.PlatformInfoEntity;
+import com.won.StoreManageMent.auth.entity.PlatFormEntity;
+import com.won.StoreManageMent.auth.entity.StoreAuthInfoEntity;
 import com.won.StoreManageMent.auth.repository.AccountRepository;
-import com.won.StoreManageMent.auth.repository.PlatFormInfoRepository;
+import com.won.StoreManageMent.auth.repository.PlatFormRepository;
+import com.won.StoreManageMent.auth.repository.StoreAuthInfoRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class NaverAuthServiceImpl implements NaverAuthService {
+
+    private final PasswordEncoder passwordEncoder;
     
     @Autowired
     private AccountRepository accountRepository;
 
     @Autowired
-    private PlatFormInfoRepository platFormInfoRepository;
+    private StoreAuthInfoRepository storeAuthInfoRepository;
+
+    @Autowired
+    private PlatFormRepository platFormRepository;
 
     @Override
     public NaverAuthDto naverLogin(String token){
@@ -61,15 +72,23 @@ public class NaverAuthServiceImpl implements NaverAuthService {
         AccountEntity account = accountRepository.findById(insertFloatFormAuthKey.getAccountId())
                 .orElseThrow(null);
 
+        PlatFormEntity flatform = platFormRepository.findByName(insertFloatFormAuthKey.getFlatForm());
+
         if (account == null){
             return;
         }
 
-        PlatformInfoEntity platFormInfo = PlatformInfoEntity.builder()
-            .accountId(insertFloatFormAuthKey.getAccountId())
-            .option1(insertFloatFormAuthKey.getOption1())
-            .option2(insertFloatFormAuthKey.getOption2())
-            .build();
+        StoreAuthInfoEntity.StoreAuthInfoEntityBuilder platFormInfoBuilder = StoreAuthInfoEntity.builder()
+                    .account(account)
+                    .platformId(flatform)
+                    .option1(passwordEncoder.encode(insertFloatFormAuthKey.getOption1()));
 
+        if(insertFloatFormAuthKey.getOption2() != null && !insertFloatFormAuthKey.getOption2().isEmpty()){
+            platFormInfoBuilder.option2(passwordEncoder.encode(insertFloatFormAuthKey.getOption2()));
+        }
+
+        StoreAuthInfoEntity platFormInfo = platFormInfoBuilder.build();
+
+        storeAuthInfoRepository.save(platFormInfo);
     }
 }

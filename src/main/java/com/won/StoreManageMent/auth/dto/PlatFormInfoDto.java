@@ -9,7 +9,7 @@ public class PlatFormInfoDto {
     @Setter
     public static class InsertFloatFormAuthKey {
         private Long accountId;
-        private String floatForm;
+        private String flatForm;
         private String option1;
         private String option2;
     }

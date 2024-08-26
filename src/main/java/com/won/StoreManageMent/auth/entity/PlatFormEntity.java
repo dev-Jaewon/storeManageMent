@@ -13,7 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "platform_info")
+@Table(name = "platform")
 @AllArgsConstructor
 @NoArgsConstructor
 public class PlatFormEntity {
