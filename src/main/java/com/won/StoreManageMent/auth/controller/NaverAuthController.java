@@ -13,6 +13,7 @@ import com.won.StoreManageMent.auth.dto.NaverAuthDto;
 import com.won.StoreManageMent.auth.dto.PlatFormInfoDto;
 import com.won.StoreManageMent.auth.service.JwtService;
 import com.won.StoreManageMent.auth.service.NaverAuthService;
+import org.springframework.web.bind.annotation.PutMapping;
 
 
 @RestController
@@ -48,7 +49,12 @@ public class NaverAuthController {
     }
 
     @PostMapping("/flatForm")
-    public void insertFloatFormAuthKeyInfo(@RequestBody PlatFormInfoDto.InsertFloatFormAuthKey insertFloatFormAuthKey){
-        naverAuthService.insertAuthKeyInfo(insertFloatFormAuthKey);
+    public void insertFloatFormAuthKeyInfo(@RequestBody PlatFormInfoDto.InsertFlatFormAuthInfo insertFlatFormAuthInfo){
+        naverAuthService.insertAuthKeyInfo(insertFlatFormAuthInfo);
+    }
+
+    @PutMapping("/flatForm")
+    public void updateFloatFormAuthKeyInfo(@RequestBody PlatFormInfoDto.UpdateFlatFormAuthInfo updateFlatFormAuthInfo){
+        naverAuthService.updateAuthKeyInfo(updateFlatFormAuthInfo);
     }
 }

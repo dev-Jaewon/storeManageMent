@@ -9,6 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.Setter;
 
@@ -17,6 +18,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "store_auth_info")
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class StoreAuthInfoEntity {
     

@@ -5,5 +5,6 @@ import com.won.StoreManageMent.auth.dto.PlatFormInfoDto;
 
 public interface NaverAuthService {
     public NaverAuthDto naverLogin(String token);
-    public void insertAuthKeyInfo(PlatFormInfoDto.InsertFloatFormAuthKey insertFloatFormAuthKey);
+    public void insertAuthKeyInfo(PlatFormInfoDto.InsertFlatFormAuthInfo insertFloatFormAuthKey);
+    public void updateAuthKeyInfo(PlatFormInfoDto.UpdateFlatFormAuthInfo insertFloatFormAuthKey);
 }

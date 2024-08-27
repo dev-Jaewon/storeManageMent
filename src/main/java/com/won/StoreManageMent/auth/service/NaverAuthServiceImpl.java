@@ -67,28 +67,52 @@ public class NaverAuthServiceImpl implements NaverAuthService {
     }
 
     @Override
-    public void insertAuthKeyInfo(PlatFormInfoDto.InsertFloatFormAuthKey insertFloatFormAuthKey){
+    public void insertAuthKeyInfo(PlatFormInfoDto.InsertFlatFormAuthInfo insertFlatFormAuthInfo){
 
-        AccountEntity account = accountRepository.findById(insertFloatFormAuthKey.getAccountId())
+        AccountEntity account = accountRepository.findById(insertFlatFormAuthInfo.getAccountId())
                 .orElseThrow(null);
-
-        PlatFormEntity flatform = platFormRepository.findByName(insertFloatFormAuthKey.getFlatForm());
 
         if (account == null){
             return;
         }
 
+        PlatFormEntity flatform = platFormRepository.findByName(insertFlatFormAuthInfo.getFlatForm());
+
+                
         StoreAuthInfoEntity.StoreAuthInfoEntityBuilder platFormInfoBuilder = StoreAuthInfoEntity.builder()
                     .account(account)
                     .platformId(flatform)
-                    .option1(passwordEncoder.encode(insertFloatFormAuthKey.getOption1()));
+                    .option1(passwordEncoder.encode(insertFlatFormAuthInfo.getOption1()));
 
-        if(insertFloatFormAuthKey.getOption2() != null && !insertFloatFormAuthKey.getOption2().isEmpty()){
-            platFormInfoBuilder.option2(passwordEncoder.encode(insertFloatFormAuthKey.getOption2()));
+        if(insertFlatFormAuthInfo.getOption2() != null && !insertFlatFormAuthInfo.getOption2().isEmpty()){
+            platFormInfoBuilder.option2(passwordEncoder.encode(insertFlatFormAuthInfo.getOption2()));
         }
 
         StoreAuthInfoEntity platFormInfo = platFormInfoBuilder.build();
 
+
         storeAuthInfoRepository.save(platFormInfo);
+    }
+
+    @Override
+    public void updateAuthKeyInfo(PlatFormInfoDto.UpdateFlatFormAuthInfo updateFlatFormAuthInfo){
+
+        if (updateFlatFormAuthInfo.getId() == null){
+            return;
+        }
+
+        StoreAuthInfoEntity platFormInfo = storeAuthInfoRepository.findById(updateFlatFormAuthInfo.getId())
+                .orElseThrow(null);
+
+        platFormInfo.setOption1(passwordEncoder.encode(updateFlatFormAuthInfo.getOption1()));
+
+        if(updateFlatFormAuthInfo.getOption2() == null){
+            platFormInfo.setOption2(null);
+        }else{
+            platFormInfo.setOption2(passwordEncoder.encode(updateFlatFormAuthInfo.getOption2()));
+        }
+
+        storeAuthInfoRepository.save(platFormInfo);
+
     }
 }
