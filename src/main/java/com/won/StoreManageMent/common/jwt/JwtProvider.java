@@ -9,7 +9,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.won.StoreManageMent.auth.dto.JwtPayLoadDto.Playload;
@@ -48,5 +51,22 @@ public class JwtProvider {
             return null;
         }
 
+    }
+
+    public String checkToken(String token){
+        try{
+
+            Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
+            JWTVerifier verifier = JWT.require(algorithm)
+            .withIssuer(ISSUER)
+            .build();
+            
+            DecodedJWT decodedJWT = verifier.verify(token);
+            
+            return decodedJWT.getPayload();
+        
+        }catch(JWTVerificationException e){
+            return null;
+        }
     }
 }
