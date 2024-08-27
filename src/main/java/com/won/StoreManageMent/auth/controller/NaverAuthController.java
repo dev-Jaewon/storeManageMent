@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.won.StoreManageMent.auth.dto.JwtPayLoadDto.Playload;
+import com.won.StoreManageMent.auth.dto.JwtPayLoadDto.ResponseAuthToken;
+import com.won.StoreManageMent.aop.Auth;
 import com.won.StoreManageMent.auth.dto.NaverAuthDto;
 import com.won.StoreManageMent.auth.dto.PlatFormInfoDto;
 import com.won.StoreManageMent.auth.service.JwtService;
@@ -27,7 +29,7 @@ public class NaverAuthController {
     private JwtService jwtService;
     
     @GetMapping("/naver")
-    public String requestMethodName(@RequestParam("token") String token) {
+    public ResponseAuthToken requestMethodName(@RequestParam("token") String token) {
 
         NaverAuthDto resNaverInfo = naverAuthService.naverLogin(token);
 
@@ -42,17 +44,13 @@ public class NaverAuthController {
         return jwtService.createToken(jwtPlayLoad);
     }
 
-    @GetMapping("/check")
-    public String checkAuthToken(@RequestParam("token") String token){
-
-        return jwtService.checkToken(token);
-    }
-
+    @Auth
     @PostMapping("/flatForm")
     public void insertFloatFormAuthKeyInfo(@RequestBody PlatFormInfoDto.InsertFlatFormAuthInfo insertFlatFormAuthInfo){
         naverAuthService.insertAuthKeyInfo(insertFlatFormAuthInfo);
     }
 
+    @Auth
     @PutMapping("/flatForm")
     public void updateFloatFormAuthKeyInfo(@RequestBody PlatFormInfoDto.UpdateFlatFormAuthInfo updateFlatFormAuthInfo){
         naverAuthService.updateAuthKeyInfo(updateFlatFormAuthInfo);

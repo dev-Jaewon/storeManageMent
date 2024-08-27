@@ -1,8 +1,8 @@
 package com.won.StoreManageMent.auth.service;
 
 import com.won.StoreManageMent.auth.dto.JwtPayLoadDto.Playload;
+import com.won.StoreManageMent.auth.dto.JwtPayLoadDto.ResponseAuthToken;
 
 public interface JwtService {
-    public String createToken(Playload playload);
-    public String checkToken(String token);
+    public ResponseAuthToken createToken(Playload playload);
 }

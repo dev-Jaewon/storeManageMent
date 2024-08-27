@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.won.StoreManageMent.aop.Auth;
 import com.won.StoreManageMent.coupang.dto.CoupangCategoryDto;
 import com.won.StoreManageMent.coupang.dto.CoupangDto.ResponseCoupangInfo;
 import com.won.StoreManageMent.coupang.dto.CoupangDto.ResponseExchangeInfo;
@@ -31,6 +32,7 @@ public class CoupangController {
     @Autowired
     private CoupangMetaDataService coupangMetaDataService;
     
+    @Auth
     @GetMapping("/info")
     public ResponseCoupangInfo orderInfo() {
 
