@@ -7,10 +7,18 @@ public class PlatFormInfoDto {
 
     @Getter
     @Setter
-    public static class InsertFloatFormAuthKey {
+    private static class FlatFormAuthInfo {
         private Long accountId;
         private String flatForm;
         private String option1;
         private String option2;
+    }
+
+    public static class InsertFlatFormAuthInfo extends FlatFormAuthInfo{}
+
+    @Getter
+    @Setter
+    public static class UpdateFlatFormAuthInfo extends FlatFormAuthInfo {
+        private Long id;
     }
 }
