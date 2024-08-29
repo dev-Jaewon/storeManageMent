@@ -36,5 +36,9 @@ out/
 ### VS Code ###
 .vscode/
 
-*env*
-**/application.properties
+# *env*
+# **/application.properties
+
+# postgresql DB
+data
+jenkins
