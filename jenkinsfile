@@ -1,0 +1,36 @@
+pipeline {
+    agent any
+
+     tools {
+        gradle 'gradle-8.4'
+    }
+
+    stages {
+        // stage ('clone') {
+        //    steps {
+
+        //         git branch: "main", url: "https://github.com/dev-Jaewon/storeManageMent.git"
+
+        //     }
+        // }
+
+        stage ('build') {
+           steps {
+                dir("/var/jenkins_home/workspace/test1/"){
+                    sh "chmod +x gradlew"
+                    sh "./gradlew clean build"
+                }
+            }
+        }
+
+        stage ('start') {
+            steps {
+                dir("/var/jenkins_home/workspace/test1/build/libs"){
+                    sh "java -jar ./StoreManageMent-0.0.1-SNAPSHOT.jar"
+                }
+            }
+        }
+     
+    }
+
+}
