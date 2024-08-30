@@ -6,13 +6,15 @@ pipeline {
     }
 
     stages {
-        // stage ('clone') {
-        //    steps {
+        stage ('clone') {
+           steps {
 
-        //         git branch: "main", url: "https://github.com/dev-Jaewon/storeManageMent.git"
+                git branch: "main", url: "https://github.com/dev-Jaewon/storeManageMent.git"
 
-        //     }
-        // }
+            }
+        }
+
+
         stage ('build') {
            steps {
                 dir("/var/jenkins_home/workspace/test1/"){
