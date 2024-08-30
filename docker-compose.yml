@@ -1,0 +1,24 @@
+name: upload
+services:
+  postgres:
+    image: postgres:16.1
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: postgres
+    ports:
+      - 1234:5432
+    expose:
+      - 1234
+    volumes:
+      - ./data:/var/lib/postgresql/data
+
+  jenkins:
+    image: jenkins/jenkins:jdk21
+    container_name: jenkins
+    user: root
+    volumes:
+      - ./jenkins:/var/jenkins_home
+    ports:
+      - 8181:8080
+      - 50000:50000
