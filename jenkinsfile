@@ -13,7 +13,6 @@ pipeline {
 
         //     }
         // }
-
         stage ('build') {
            steps {
                 dir("/var/jenkins_home/workspace/test1/"){
