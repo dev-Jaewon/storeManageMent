@@ -2,69 +2,66 @@ package com.won.StoreManageMent.exchangeRate.dto;
 
 import java.util.ArrayList;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 public class ExchangeDto {
-    
+
     @Getter
     @Setter
-    public static class RequestExchangeRate {
-        private ArrayList<String> countries;
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ResponseCurrency {
+        private double price;
     }
 
     @Getter
     @Setter
-    public static class ResponseCurrency {
-        private ArrayList<Currency> currencies;
+    public static class RequestExChangeRate {
+        private String currency;
+        private int page = 1;
+        private int perPage = 10;
+    }
+
+    @Getter
+    public static class DaumFinanceCurrencyInfo {
+        private int code;
+        private String message;
+        private ArrayList<CurrencyData> data;
+        private int totalPages;
+        private int totalCount;
+        private int currentPage;
+        private int pageSize;
 
         @Getter
-        @Setter
-        public static class Currency {
-            // 결과
-            // 1 : 성공, 2 : DATA코드 오류, 3 : 인증코드 오류, 4 : 일일제한횟수 마감
-            private int result;
+        public static class CurrencyData {
+            private String symbolCode;
+            private String date;
+            private int recurrenceCount;
+            private double basePrice;
+            private String change;
+            private double changePrice;
+            private double changeRate;
+            private double cashBuyingPrice;
+            private double cashSellingPrice;
+            private double ttBuyingPrice;
+            private double ttSellingPrice;
+            private Double tcBuyingPrice;
+            private Double fcSellingPrice;
+            private double exchangeCommission;
+            private double usDollarRate;
+            private ChartImageUrl chartImageUrl;
 
-            // 통화코드
-            @JsonProperty("cur_unit")
-            private String curUnit;
-
-            // 전신환(송금) 받을때
-            private String ttb;
-
-            // 전신환(송금) 보낼때
-            private String tts;
-
-            // 매매 기준율
-            @JsonProperty("deal_bas_r")
-            private String dealBasR;
-
-            // 장부가격
-            private String bkpr;
-
-            // 년환가료율
-            @JsonProperty("yy_efee_r")
-            private String yyEfeeR;
-
-            // 10일환가료율
-            @JsonProperty("ten_dd_efee_r")
-            private String tenDdEfeeR;
-
-            // 서울외국환중개 매매기준율
-            @JsonProperty("kftc_bkpr")
-            private String kftcBkpr;
-
-            // 서울외국환중개 장부가격
-            @JsonProperty("kftc_deal_bas_r")
-            private String kftcDealBasR;
-
-            // 국가/통화명
-            @JsonProperty("cur_nm")
-            private String curNm;
+            @Getter
+            public static class ChartImageUrl {
+                private String day;
+                private String month;
+                private String month3;
+                private String year;
+            }
         }
     }
-
-
+    
 }
