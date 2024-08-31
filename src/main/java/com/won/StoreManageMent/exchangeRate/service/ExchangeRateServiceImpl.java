@@ -42,8 +42,14 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
 
             ObjectMapper objectMapper = new ObjectMapper();
             DaumFinanceCurrencyInfo naverAuthDto = objectMapper.readValue(res, DaumFinanceCurrencyInfo.class);
+           
+            double currency = naverAuthDto.getData().get(0).getTtSellingPrice();
+
+            if (currencyInfo.getCurrency() == "JPY"){
+                return new ResponseCurrency(Math.round((currency / 100) * 100) / 100.0);
+            }
             
-            return new ResponseCurrency(naverAuthDto.getData().get(0).getTtSellingPrice());
+            return new ResponseCurrency(currency);
 
         }catch(URISyntaxException | IOException | InterruptedException e){
             System.out.println(e);
