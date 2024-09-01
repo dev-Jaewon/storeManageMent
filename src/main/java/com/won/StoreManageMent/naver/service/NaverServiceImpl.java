@@ -9,6 +9,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.net.http.HttpRequest.BodyPublishers;
 import java.nio.charset.StandardCharsets;
 
 import javax.imageio.ImageIO;
@@ -19,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.won.StoreManageMent.auth.dto.JwtPayLoadDto.ResponseAuthToken;
+import com.won.StoreManageMent.exchangeRate.dto.ExchangeDto.DaumFinanceCurrencyInfo;
 import com.won.StoreManageMent.naver.dto.NaverPayLoad;
 
 import lombok.RequiredArgsConstructor;
@@ -38,7 +41,7 @@ public class NaverServiceImpl implements NaverService{
     private final HttpClient httpClient;
 
     @Override
-    public String newAuthToken(){
+    public ResponseAuthToken newAuthToken(){
 
         try {
       
@@ -74,14 +77,14 @@ public class NaverServiceImpl implements NaverService{
 
             String res = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
 
-            System.out.println(res);
+            ObjectMapper objectMapper = new ObjectMapper();
+            ResponseAuthToken naverAuthDto = objectMapper.readValue(res, ResponseAuthToken.class);
 
-
-            return res;
+            return naverAuthDto;
 
         } catch(Exception e){
 
-            return null;
+            return new ResponseAuthToken();
         }
 
     }
