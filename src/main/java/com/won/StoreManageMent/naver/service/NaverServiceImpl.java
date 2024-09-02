@@ -10,6 +10,8 @@ import java.nio.charset.StandardCharsets;
 import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.Map;
+import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
@@ -20,8 +22,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.won.StoreManageMent.naver.dto.NaverPayLoad;
+import com.won.StoreManageMent.naver.dto.NaverProductsDto;
 import com.won.StoreManageMent.naver.dto.ResponseAuthToken;
+import com.won.StoreManageMent.naver.dto.ResponseOriginProducts;
 import com.won.StoreManageMent.naver.dto.ResponseUploadImage;
 
 import lombok.RequiredArgsConstructor;
@@ -148,6 +153,41 @@ public class NaverServiceImpl implements NaverService{
 
 
     }
+
+
+    @Override
+    public ResponseOriginProducts originProducts(NaverProductsDto naverProductsDto){
+
+        String REQUEST_API = "https://api.commerce.naver.com/external/v1/products/search";
+
+        try {
+
+            ResponseAuthToken token = this.newAuthToken();
+
+            Map<String, Integer> reqInfo = new HashMap<String, Integer>();
+
+            reqInfo.put("size", naverProductsDto.getSize());
+            reqInfo.put("page", naverProductsDto.getPage());
+
+            HttpRequest request = HttpRequest.newBuilder()
+                        .uri(new URI(REQUEST_API))
+                        .header("content-type", "application/json")
+                        .header("Authorization", "Bearer " + token.getAccessToken())
+                        .POST(HttpRequest.BodyPublishers.ofString(new Gson().toJson(reqInfo)))
+                        .build();
+
+            String res = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            ResponseOriginProducts naverAuthDto = objectMapper.readValue(res, ResponseOriginProducts.class);
+                        
+            return naverAuthDto;
+
+        } catch (Exception e) {
+            return new ResponseOriginProducts();
+        }
+    }
+
 
     private BufferedImage imageSizeTo1000px(BufferedImage img) {
 
