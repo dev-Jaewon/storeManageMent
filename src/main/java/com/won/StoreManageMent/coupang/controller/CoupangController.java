@@ -59,6 +59,7 @@ public class CoupangController {
         
     }
 
+    @Auth
     @GetMapping("/category/{code}")
     public CoupangCategoryDto.CategoryData getCategoryMetaData(@PathVariable("code") String code) {
         return coupangMetaDataService.getCategoryData(code);

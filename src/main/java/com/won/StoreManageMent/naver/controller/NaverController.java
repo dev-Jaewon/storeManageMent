@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.won.StoreManageMent.aop.Auth;
 import com.won.StoreManageMent.naver.dto.NaverProductsDto;
 import com.won.StoreManageMent.naver.dto.ResponseCategory;
 import com.won.StoreManageMent.naver.dto.ResponseOriginProducts;
@@ -26,16 +27,19 @@ public class NaverController {
     @Autowired
     private NaverService naverService;
     
+    @Auth
     @PostMapping("/image")
     public ResponseUploadImage imageUpload(@RequestParam("files") ArrayList<MultipartFile> files) {
         return naverService.imageFreeHosting(files);
     }
 
+    @Auth
     @GetMapping("/origin/products")
     public ResponseOriginProducts naverProducts(@ModelAttribute NaverProductsDto naverProductsDto) {
         return naverService.originProducts(naverProductsDto);
     }
 
+    @Auth
     @GetMapping("/category")
     public ResponseCategory naverCategoryInfo(@RequestParam("keyword") String keyword){
         return naverService.getCategoryInfo(keyword);
