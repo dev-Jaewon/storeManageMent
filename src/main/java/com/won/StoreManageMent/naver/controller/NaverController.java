@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.won.StoreManageMent.naver.dto.NaverProductsDto;
+import com.won.StoreManageMent.naver.dto.ResponseCategory;
 import com.won.StoreManageMent.naver.dto.ResponseOriginProducts;
 import com.won.StoreManageMent.naver.dto.ResponseUploadImage;
 import com.won.StoreManageMent.naver.service.NaverService;
@@ -33,5 +34,10 @@ public class NaverController {
     @GetMapping("/origin/products")
     public ResponseOriginProducts naverProducts(@ModelAttribute NaverProductsDto naverProductsDto) {
         return naverService.originProducts(naverProductsDto);
+    }
+
+    @GetMapping("/category")
+    public ResponseCategory naverCategoryInfo(@RequestParam("keyword") String keyword){
+        return naverService.getCategoryInfo(keyword);
     }
 }
