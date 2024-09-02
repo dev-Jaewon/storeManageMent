@@ -2,17 +2,11 @@ package com.won.StoreManageMent.naver.service;
 
 import java.util.ArrayList;
 import java.util.Base64;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.net.http.HttpRequest.BodyPublishers;
 import java.nio.charset.StandardCharsets;
-
-import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -20,11 +14,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.won.StoreManageMent.auth.dto.JwtPayLoadDto.ResponseAuthToken;
-import com.won.StoreManageMent.exchangeRate.dto.ExchangeDto.DaumFinanceCurrencyInfo;
 import com.won.StoreManageMent.naver.dto.NaverPayLoad;
+import com.won.StoreManageMent.naver.dto.ResponseAuthToken;
+import com.won.StoreManageMent.naver.dto.ResponseUploadImage;
 
 import lombok.RequiredArgsConstructor;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 
 @Service
 @RequiredArgsConstructor
@@ -89,4 +87,53 @@ public class NaverServiceImpl implements NaverService{
 
     }
 
-}
+    @Override
+    public ResponseUploadImage imageFreeHosting(ArrayList<MultipartFile> files){
+
+        String REQUEST_API = "https://api.commerce.naver.com/external/v1/product-images/upload";
+        
+        ResponseAuthToken token = this.newAuthToken();
+
+
+        MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder()
+                        .setType(MultipartBody.FORM);
+
+
+        try {
+
+            for(MultipartFile file: files){
+            
+                RequestBody fileBody = RequestBody.create(file.getBytes(), okhttp3.MediaType.parse(file.getContentType()));
+
+                multipartBodyBuilder.addFormDataPart("imageFiles", file.getOriginalFilename(),fileBody);
+            }
+            
+    
+            OkHttpClient okHttpClient = new OkHttpClient()
+                    .newBuilder()
+                    .build();
+
+            Request request = new Request.Builder()
+                    .header("Authorization", "Bearer " + token.getAccessToken())
+                    .header("content-type", "multipart/form-data")
+                    .url(REQUEST_API)
+                    .post(multipartBodyBuilder.build())
+                    .build();
+
+
+            String res = okHttpClient.newCall(request).execute().body().string();
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            ResponseUploadImage responseUploadImage = objectMapper.readValue(res, ResponseUploadImage.class);
+
+            return responseUploadImage;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseUploadImage();
+        }
+
+
+    }
+
+ }

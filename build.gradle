@@ -34,7 +34,10 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.postgresql:postgresql:42.5.5'
 	implementation 'org.springframework.security:spring-security-crypto:6.2.1'
+	implementation 'net.imagej:ij:1.53t'
 	implementation 'org.mindrot:jbcrypt:0.4'
+	implementation 'com.google.code.gson:gson:2.10.1'
+	implementation 'com.squareup.okhttp3:okhttp:4.12.0'
 	
 	implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
