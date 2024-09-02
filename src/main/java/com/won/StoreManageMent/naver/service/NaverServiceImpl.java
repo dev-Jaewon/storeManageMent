@@ -7,7 +7,13 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.awt.Graphics2D;
+import java.awt.Color;
+import java.awt.image.BufferedImage;
 
+import javax.imageio.ImageIO;
+
+import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
@@ -102,8 +108,15 @@ public class NaverServiceImpl implements NaverService{
         try {
 
             for(MultipartFile file: files){
-            
-                RequestBody fileBody = RequestBody.create(file.getBytes(), okhttp3.MediaType.parse(file.getContentType()));
+
+                BufferedImage img = ImageIO.read(file.getInputStream());
+
+                BufferedImage finalImage = imageSizeTo1000px(img);
+
+                ByteArrayOutputStream temp = new ByteArrayOutputStream();
+                ImageIO.write(finalImage, "png", temp);
+                
+                RequestBody fileBody = RequestBody.create(temp.toByteArray(), okhttp3.MediaType.parse(file.getContentType()));
 
                 multipartBodyBuilder.addFormDataPart("imageFiles", file.getOriginalFilename(),fileBody);
             }
@@ -136,4 +149,23 @@ public class NaverServiceImpl implements NaverService{
 
     }
 
+    private BufferedImage imageSizeTo1000px(BufferedImage img) {
+
+        int width = img.getWidth();
+        int height = img.getHeight();
+
+        BufferedImage finalImg = new BufferedImage(IMAGE_SIZE, IMAGE_SIZE, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = finalImg.createGraphics();
+
+        g2d.setColor(Color.WHITE);
+        g2d.fillRect(0, 0, IMAGE_SIZE, IMAGE_SIZE);
+
+        int xOffset = (IMAGE_SIZE - width) / 2;
+        int yOffset = (IMAGE_SIZE - height) / 2;
+
+        g2d.drawImage(img, xOffset, yOffset, null);
+        g2d.dispose();
+
+        return finalImg;
+    }
  }
