@@ -13,7 +13,7 @@ import lombok.AllArgsConstructor;
 @Aspect
 @Component
 @AllArgsConstructor
-public class AuthAop {
+public class AuthAspect {
     
     public final JwtProvider jwtProvider;
     private final HttpServletRequest request;
