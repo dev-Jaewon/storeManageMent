@@ -4,6 +4,13 @@
 
 이 프로젝트는 스마트스토어와 쿠팡에 상품을 손쉽게 업로드하고 관리할 수 있도록 도와줍니다. 또한, 상품의 마진율을 효과적으로 관리하고, 공급처 링크도 간편하게 관리할 수 있습니다
 
+## 구성도
+
+![image](https://github.com/user-attachments/assets/9931f33d-7f62-43b5-baf7-2c9961f133d7)
+
+![image](https://github.com/user-attachments/assets/2a64be61-f3c4-495a-a171-8b5bdb40b458)
+
+
 ### 프로젝트 화면
 
 - 서비스 메인 페이지
@@ -25,8 +32,3 @@
 - 누끼 제거 기능
 
 ![스크린샷 2024-08-31 090209](https://github.com/user-attachments/assets/1b1165d0-35e8-4a72-9fc6-afb2c3ba6a18)
-
-#### 시스템 구성도
-
-![image](https://github.com/user-attachments/assets/2a64be61-f3c4-495a-a171-8b5bdb40b458)
-
