@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class DeliveryInfoRepositoryTest {
+public class DeliveryInfoRepositoryTest extends GenerateEntity {
 
     @Autowired
     private ClaimDeliveryInfoRepository claimDeliveryInfoRepository;
@@ -24,26 +24,13 @@ public class DeliveryInfoRepositoryTest {
     @DisplayName("insertFromDeliveryInfoTable")
     public void checkInsertDataFromDeliveryInfo(){
 //        GiVEN
-        ClaimDeliveryInfoEntity testClaimDeliveryInfo = ClaimDeliveryInfoEntity.builder()
-                .returnDeliveryCompanyPriorityType("01")
-                .returnDeliveryFee(3500)
-                .exchangeDeliveryFee(3500)
-                .shippingAddressId(1234)
-                .build();
+        ClaimDeliveryInfoEntity testClaimDeliveryInfo = getClaimDeliveryInfo();
 
         ClaimDeliveryInfoEntity resultClaimDeliveryInfo = claimDeliveryInfoRepository.save(testClaimDeliveryInfo);
 
         assertNotNull(resultClaimDeliveryInfo, "no generated data from claimDeliveryInfo table");
 
-        DeliveryInfoEntity deliveryInfo = DeliveryInfoEntity.builder()
-                .deliveryType("DELIVERY")
-                .deliveryAttributeType("NORMAL")
-                .deliveryCompany("HANJIN")
-                .deliveryBundleGroupUsable(false)
-                .deliveryFee("FREE")
-                .claimDeliveryInfo(resultClaimDeliveryInfo)
-                .installationFee(false)
-                .build();
+        DeliveryInfoEntity deliveryInfo = getDeliveryInfoEntity(resultClaimDeliveryInfo);
 
 //        WHEN
         DeliveryInfoEntity result = deliveryInfoRepository.save(deliveryInfo);

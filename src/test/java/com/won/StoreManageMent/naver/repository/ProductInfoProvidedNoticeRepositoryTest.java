@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class ProductInfoProvidedNoticeRepositoryTest {
+public class ProductInfoProvidedNoticeRepositoryTest extends GenerateEntity {
 
     @Autowired
     private ProductInfoProvidedNoticeEtcRepository productInfoProvidedNoticeEtcRepository;
@@ -24,27 +24,13 @@ public class ProductInfoProvidedNoticeRepositoryTest {
     @DisplayName("insertFromProductInfoProvidedNoticeTable")
     public void checkInsertDataFromProductInfoProvidedNotice(){
 //        GIVEN
-        ProductInfoProvidedNoticeEtcEntity etc = ProductInfoProvidedNoticeEtcEntity.builder()
-                .returnCostReason("1")
-                .noRefundReason("1")
-                .qualityAssuranceStandard("1")
-                .compensationProcedure("1")
-                .troubleShootingContents("1")
-                .certificateDetails("상세페이지 참조")
-                .itemName("상세페이지 참조")
-                .modelName("상세페이지 참조")
-                .manufacturer("상세페이지 참조")
-                .customerServicePhoneNumber("010-1234-5678")
-                .build();
+        ProductInfoProvidedNoticeEtcEntity etc = getProductInfoProvidedNoticeEtcEntity();
 
         ProductInfoProvidedNoticeEtcEntity etcResult = productInfoProvidedNoticeEtcRepository.save(etc);
 
         assertNotNull(etcResult);
 
-        ProductInfoProvidedNoticeEntity productInfoProviderNotice = ProductInfoProvidedNoticeEntity.builder()
-                .productInfoProvidedNoticeType("ETC")
-                .productInfoProvidedNoticeEtc(etcResult)
-                .build();
+        ProductInfoProvidedNoticeEntity productInfoProviderNotice = getProductInfoProvidedNoticeEntity(etcResult);
 
 //        WHEN
         ProductInfoProvidedNoticeEntity resultProviderNotice = productInfoProvidedNoticeRepository.save(productInfoProviderNotice);

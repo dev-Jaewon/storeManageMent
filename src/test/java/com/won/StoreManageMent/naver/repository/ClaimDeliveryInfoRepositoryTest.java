@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class ClaimDeliveryInfoRepositoryTest {
+public class ClaimDeliveryInfoRepositoryTest extends GenerateEntity {
 
     @Autowired
     private ClaimDeliveryInfoRepository claimDeliveryInfoRepository;
@@ -20,12 +20,7 @@ public class ClaimDeliveryInfoRepositoryTest {
     @DisplayName("insertFromClaimDeliveryInfoTable")
     public void checkInsertDataFromClaimDeliveryInfo(){
 //        GIVEN
-        ClaimDeliveryInfoEntity testClaimDeliveryInfo = ClaimDeliveryInfoEntity.builder()
-                .returnDeliveryCompanyPriorityType("01")
-                .returnDeliveryFee(3500)
-                .exchangeDeliveryFee(3500)
-                .shippingAddressId(1234)
-                .build();
+        ClaimDeliveryInfoEntity testClaimDeliveryInfo = getClaimDeliveryInfo();
 
 
 //        WHEN

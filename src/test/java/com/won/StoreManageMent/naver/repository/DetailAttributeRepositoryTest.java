@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class DetailAttributeRepositoryTest {
+public class DetailAttributeRepositoryTest extends GenerateEntity {
 
     @Autowired
     private ProductInfoProvidedNoticeEtcRepository productInfoProvidedNoticeEtcRepository;
@@ -26,40 +26,18 @@ public class DetailAttributeRepositoryTest {
     @Test
     public void InsertDataFromDetailAttribute(){
 //        GIVEN
-        ProductInfoProvidedNoticeEtcEntity etc = ProductInfoProvidedNoticeEtcEntity.builder()
-                .returnCostReason("1")
-                .noRefundReason("1")
-                .qualityAssuranceStandard("1")
-                .compensationProcedure("1")
-                .troubleShootingContents("1")
-                .certificateDetails("상세페이지 참조")
-                .itemName("상세페이지 참조")
-                .modelName("상세페이지 참조")
-                .manufacturer("상세페이지 참조")
-                .customerServicePhoneNumber("010-1234-5678")
-                .build();
+        ProductInfoProvidedNoticeEtcEntity etc = getProductInfoProvidedNoticeEtcEntity();
 
         ProductInfoProvidedNoticeEtcEntity etcResult = productInfoProvidedNoticeEtcRepository.save(etc);
 
         assertNotNull(etcResult);
 
-        ProductInfoProvidedNoticeEntity productInfoProviderNotice = ProductInfoProvidedNoticeEntity.builder()
-                .productInfoProvidedNoticeType("ETC")
-                .productInfoProvidedNoticeEtc(etcResult)
-                .build();
+        ProductInfoProvidedNoticeEntity productInfoProviderNotice = getProductInfoProvidedNoticeEntity(etcResult);
 
         ProductInfoProvidedNoticeEntity resultProviderNotice = productInfoProvidedNoticeRepository.save(productInfoProviderNotice);
 
 
-        DetailAttributeEntity detailAttribute = DetailAttributeEntity.builder()
-                .minorPurchasable(true)
-                .afterServiceTelephoneNumber("010-1234-5678")
-                .afterServiceGuideContent("해외 구매대행 제품은 A/S 불가합니다.")
-                .originAreaCode("03")
-                .kcExemptionType("OVERSEAS")
-                .kcCertifiedProductExclusionYn("KC_EXEMPTION_OBJECT")
-                .productInfoProvidedNoticeEntity(resultProviderNotice)
-                .build();
+        DetailAttributeEntity detailAttribute = getDetailAttributeEntity(resultProviderNotice);
 
 //        WHEN
         DetailAttributeEntity resultDetailAttribute = detailAttributeRepository.save(detailAttribute);

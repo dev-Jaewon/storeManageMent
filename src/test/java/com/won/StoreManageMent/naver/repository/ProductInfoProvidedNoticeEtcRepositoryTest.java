@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class ProductInfoProvidedNoticeEtcRepositoryTest {
+public class ProductInfoProvidedNoticeEtcRepositoryTest extends GenerateEntity {
 
     @Autowired
     private ProductInfoProvidedNoticeEtcRepository productInfoProvidedNoticeEtcRepoy;
@@ -18,18 +18,7 @@ public class ProductInfoProvidedNoticeEtcRepositoryTest {
     @Test
     public void insertProductInfoProvidedNoticeEtcRepository(){
 //        GIVEN
-        ProductInfoProvidedNoticeEtcEntity etc = ProductInfoProvidedNoticeEtcEntity.builder()
-                .returnCostReason("")
-                .noRefundReason("1")
-                .qualityAssuranceStandard("1")
-                .compensationProcedure("1")
-                .troubleShootingContents("1")
-                .certificateDetails("상세페이지 참조")
-                .itemName("상세페이지 참조")
-                .modelName("상세페이지 참조")
-                .manufacturer("상세페이지 참조")
-                .customerServicePhoneNumber("010-1234-5678")
-                .build();
+        ProductInfoProvidedNoticeEtcEntity etc = getProductInfoProvidedNoticeEtcEntity();
 
 //        WHEN
         ProductInfoProvidedNoticeEtcEntity result = productInfoProvidedNoticeEtcRepoy.save(etc);
