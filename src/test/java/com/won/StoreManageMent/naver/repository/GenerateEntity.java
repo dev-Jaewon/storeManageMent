@@ -1,5 +1,6 @@
 package com.won.StoreManageMent.naver.repository;
 
+import com.won.StoreManageMent.auth.entity.AccountEntity;
 import com.won.StoreManageMent.naver.entity.*;
 
 public class GenerateEntity {
@@ -56,6 +57,15 @@ public class GenerateEntity {
                 .kcExemptionType("OVERSEAS")
                 .kcCertifiedProductExclusionYn("KC_EXEMPTION_OBJECT")
                 .productInfoProvidedNoticeEntity(resultProviderNotice)
+                .build();
+    }
+
+    public static AccountEntity getAccountInfo(){
+        return AccountEntity.builder()
+                .platform("naver")
+                .platformId("01")
+                .nickName("testUser")
+                .profileImage("image_url")
                 .build();
     }
 }
