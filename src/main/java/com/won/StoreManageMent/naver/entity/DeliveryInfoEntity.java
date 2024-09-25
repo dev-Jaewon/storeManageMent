@@ -32,6 +32,7 @@ public class DeliveryInfoEntity {
     private String deliveryFee;
 
     @OneToOne
+    @JoinColumn(unique = true, name = "claim_delivery_info_id")
     private ClaimDeliveryInfoEntity claimDeliveryInfo;
 
     @Column(name = "installation_fee", nullable = false)
