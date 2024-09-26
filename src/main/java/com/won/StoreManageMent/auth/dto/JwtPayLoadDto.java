@@ -1,9 +1,6 @@
 package com.won.StoreManageMent.auth.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
@@ -11,10 +8,10 @@ public class JwtPayLoadDto {
     
     @Getter
     @Setter
-    @AllArgsConstructor
+    @Builder
     public static class Playload {
-        private String id;
-        private String platform;
+        private Long id;
+        private String nickName;
         private String platformId;
     }
 

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.management.RuntimeErrorException;
 
+import com.auth0.jwt.interfaces.Claim;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -53,19 +54,21 @@ public class JwtProvider {
 
     }
 
-    public String checkToken(String token){
+    public Long checkToken(String token){
         try{
-
             Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
-            JWTVerifier verifier = JWT.require(algorithm)
-            .withIssuer(ISSUER)
-            .build();
-            
-            DecodedJWT decodedJWT = verifier.verify(token);
-            
-            return decodedJWT.getPayload();
-        
-        }catch(JWTVerificationException e){
+
+            DecodedJWT verifier = JWT.require(algorithm)
+                    .withIssuer(ISSUER)
+                    .build()
+                    .verify(token);
+
+            Map<String, Claim> payload = verifier.getClaims();
+
+            Long accountPlatformId = Long.parseLong(payload.get("id").toString());
+
+            return accountPlatformId;
+        }catch (JWTVerificationException e){
             return null;
         }
     }

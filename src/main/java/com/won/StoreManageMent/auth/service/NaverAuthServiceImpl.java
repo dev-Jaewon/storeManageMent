@@ -7,7 +7,10 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+import com.won.StoreManageMent.auth.dto.JwtPayLoadDto;
+import com.won.StoreManageMent.auth.dto.JwtPayLoadDto.ResponseAuthToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -38,8 +41,11 @@ public class NaverAuthServiceImpl implements NaverAuthService {
     @Autowired
     private PlatFormRepository platFormRepository;
 
+    @Autowired
+    private JwtService jwtService;
+
     @Override
-    public NaverAuthDto naverLogin(String token){
+    public ResponseAuthToken naverLogin(String token){
         try{
         
             String NAVER_AUTH_API = "https://openapi.naver.com/v1/nid/me";
@@ -58,11 +64,24 @@ public class NaverAuthServiceImpl implements NaverAuthService {
             ObjectMapper objectMapper = new ObjectMapper();
             NaverAuthDto naverAuthDto = objectMapper.readValue(res, NaverAuthDto.class);
 
-            return naverAuthDto;
+            NaverAuthDto.NaverUserInfoResponse naverAuthInfo = naverAuthDto.getResponse();
+
+            AccountEntity account = accountRepository.findByPlatFormId(naverAuthInfo.getId());
+
+//            if(userInfo == null){
+//                return null;
+//            }
+//
+            JwtPayLoadDto.Playload jwtPlayLoad = JwtPayLoadDto.Playload.builder()
+                    .id(account.getId())
+                    .nickName(account.getNickName())
+                    .platformId(account.getPlatformId())
+                    .build();
+
+            return jwtService.createToken(jwtPlayLoad);
 
         }catch(URISyntaxException | IOException | InterruptedException e){
-            System.out.println(e);
-            return new NaverAuthDto();
+            throw new UsernameNotFoundException("해당 유저를 찾을 수 없습니다.");
         }
     }
 
