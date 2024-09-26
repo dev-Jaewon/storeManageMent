@@ -1,6 +1,9 @@
 package com.won.StoreManageMent.naver.controller;
 
 import com.won.StoreManageMent.naver.dto.*;
+import com.won.StoreManageMent.naver.service.NaverInfoManageService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,7 +21,10 @@ public class NaverController {
 
     @Autowired
     private NaverApiService naverApiService;
-    
+
+    @Autowired
+    private NaverInfoManageService naverInfoManageService;
+
     @Auth
     @PostMapping("/image")
     public ResponseUploadImage imageUpload(@RequestParam("files") ArrayList<MultipartFile> files) {
@@ -35,5 +41,16 @@ public class NaverController {
     @GetMapping("/category")
     public ResponseCategory naverCategoryInfo(@RequestParam("keyword") String keyword){
         return naverApiService.getCategoryInfo(keyword);
+    }
+
+    @Auth
+    @PostMapping("/sellerInfo")
+    public ResponseEntity<String> insertNaverSellerInfo(@RequestParam(required = false) RequestNaverSellerInfo requestNaverSellerInfo){
+        try{
+            String message = naverInfoManageService.addNaverSellerInfo(requestNaverSellerInfo);
+            return ResponseEntity.status(HttpStatus.CREATED).body(message);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 }
