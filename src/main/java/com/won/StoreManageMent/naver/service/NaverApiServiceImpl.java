@@ -15,6 +15,7 @@ import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
+import com.won.StoreManageMent.naver.dto.*;
 import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -23,12 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.won.StoreManageMent.naver.dto.NaverPayLoad;
-import com.won.StoreManageMent.naver.dto.NaverProductsDto;
-import com.won.StoreManageMent.naver.dto.ResponseAuthToken;
-import com.won.StoreManageMent.naver.dto.ResponseCategory;
-import com.won.StoreManageMent.naver.dto.ResponseOriginProducts;
-import com.won.StoreManageMent.naver.dto.ResponseUploadImage;
 
 import lombok.RequiredArgsConstructor;
 import okhttp3.MultipartBody;
@@ -38,13 +33,13 @@ import okhttp3.RequestBody;
 
 @Service
 @RequiredArgsConstructor
-public class NaverServiceImpl implements NaverService{
+public class NaverApiServiceImpl implements NaverApiService {
 
     @Value("${naver.clientId}")
-    private String CLIENT_ID;
+    private final String CLIENT_ID;
     
     @Value("${naver.clientSecretKey}")
-    private String CLIENT_SECRET_KEY;
+    private final String CLIENT_SECRET_KEY;
 
     private final int IMAGE_SIZE = 1000;
 
