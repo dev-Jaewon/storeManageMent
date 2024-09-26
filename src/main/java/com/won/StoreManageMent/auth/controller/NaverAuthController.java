@@ -28,20 +28,9 @@ public class NaverAuthController {
     @Autowired
     private JwtService jwtService;
     
-    @GetMapping("/naver")
+    @GetMapping("/login/naver")
     public ResponseAuthToken requestMethodName(@RequestParam("token") String token) {
-
-        NaverAuthDto resNaverInfo = naverAuthService.naverLogin(token);
-
-        NaverAuthDto.NaverUserInfoResponse userInfo = resNaverInfo.getResponse();
-
-        if(userInfo == null){
-            return null;
-        }
-
-        Playload jwtPlayLoad = new Playload(userInfo.getId(),userInfo.getNickname(),userInfo.getProfileImage());
-
-        return jwtService.createToken(jwtPlayLoad);
+        return naverAuthService.naverLogin(token);
     }
 
     @Auth
