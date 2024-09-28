@@ -21,7 +21,7 @@ public class PlatFormEntity {
     @Id
     @GeneratedValue
     @Column(name = "platform_id")
-    private Long platFormId;
+    private Long platformId;
 
     @Column(nullable = false)
     private String name;

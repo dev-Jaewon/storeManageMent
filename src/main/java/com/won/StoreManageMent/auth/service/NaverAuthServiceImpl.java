@@ -66,7 +66,7 @@ public class NaverAuthServiceImpl implements NaverAuthService {
 
             NaverAuthDto.NaverUserInfoResponse naverAuthInfo = naverAuthDto.getResponse();
 
-            AccountEntity account = accountRepository.findByPlatFormId(naverAuthInfo.getId());
+            AccountEntity account = accountRepository.findByPlatformId(naverAuthInfo.getId());
 
 //            if(userInfo == null){
 //                return null;

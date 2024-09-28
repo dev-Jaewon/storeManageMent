@@ -7,5 +7,5 @@ import com.won.StoreManageMent.auth.entity.AccountEntity;
 
 @Repository
 public interface AccountRepository extends JpaRepository<AccountEntity, Long> {
-    public AccountEntity findByPlatFormId(String platFormId);
+    public AccountEntity findByPlatformId(String platformId);
 }

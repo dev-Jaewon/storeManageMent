@@ -36,10 +36,10 @@ import okhttp3.RequestBody;
 public class NaverApiServiceImpl implements NaverApiService {
 
     @Value("${naver.clientId}")
-    private final String CLIENT_ID;
+    private String CLIENT_ID;
     
     @Value("${naver.clientSecretKey}")
-    private final String CLIENT_SECRET_KEY;
+    private String CLIENT_SECRET_KEY;
 
     private final int IMAGE_SIZE = 1000;
 
