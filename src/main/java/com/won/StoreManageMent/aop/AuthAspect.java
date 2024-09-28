@@ -38,11 +38,7 @@ public class AuthAspect {
         }
 
         String token = Authorization.substring(7);
-        Long accountId = jwtProvider.checkToken(token);
-
-        if (accountId == null) {
-            throw new AccessDeniedException("접근권한이 없습니다.");
-        }
+        long accountId = jwtProvider.checkToken(token);
 
         AccountEntity account = accountRepository.findById(accountId)
                 .orElse(null);

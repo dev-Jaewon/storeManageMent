@@ -1,6 +1,9 @@
 package com.won.StoreManageMent.auth.controller;
 
+import com.won.StoreManageMent.auth.dto.ResponseAccount;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -8,10 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.won.StoreManageMent.auth.dto.JwtPayLoadDto.Playload;
 import com.won.StoreManageMent.auth.dto.JwtPayLoadDto.ResponseAuthToken;
 import com.won.StoreManageMent.aop.Auth;
-import com.won.StoreManageMent.auth.dto.NaverAuthDto;
 import com.won.StoreManageMent.auth.dto.PlatFormInfoDto;
 import com.won.StoreManageMent.auth.service.JwtService;
 import com.won.StoreManageMent.auth.service.NaverAuthService;
@@ -43,5 +44,12 @@ public class NaverAuthController {
     @PutMapping("/flatForm")
     public void updateFloatFormAuthKeyInfo(@RequestBody PlatFormInfoDto.UpdateFlatFormAuthInfo updateFlatFormAuthInfo){
         naverAuthService.updateAuthKeyInfo(updateFlatFormAuthInfo);
+    }
+
+    @Auth
+    @GetMapping
+    public ResponseEntity<ResponseAccount> getAccountInfo(){
+        ResponseAccount accountInfo = naverAuthService.getAccountInfo();
+        return ResponseEntity.status(HttpStatus.CREATED).body(accountInfo);
     }
 }

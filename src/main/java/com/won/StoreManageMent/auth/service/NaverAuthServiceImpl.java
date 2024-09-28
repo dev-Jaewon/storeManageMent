@@ -9,6 +9,8 @@ import java.net.http.HttpResponse;
 
 import com.won.StoreManageMent.auth.dto.JwtPayLoadDto;
 import com.won.StoreManageMent.auth.dto.JwtPayLoadDto.ResponseAuthToken;
+import com.won.StoreManageMent.auth.dto.ResponseAccount;
+import com.won.StoreManageMent.common.jwt.AccountContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -43,6 +45,9 @@ public class NaverAuthServiceImpl implements NaverAuthService {
 
     @Autowired
     private JwtService jwtService;
+
+    @Autowired
+    private AccountContext accountContext;
 
     @Override
     public ResponseAuthToken naverLogin(String token){
@@ -133,5 +138,15 @@ public class NaverAuthServiceImpl implements NaverAuthService {
 
         storeAuthInfoRepository.save(platFormInfo);
 
+    }
+
+    @Override
+    public ResponseAccount getAccountInfo(){
+        AccountEntity account = accountContext.getAccount();
+
+        return ResponseAccount.builder()
+                .id(account.getId())
+                .nickName(account.getNickName())
+                .build();
     }
 }

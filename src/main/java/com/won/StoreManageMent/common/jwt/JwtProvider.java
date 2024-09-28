@@ -6,11 +6,11 @@ import java.util.Map;
 import javax.management.RuntimeErrorException;
 
 import com.auth0.jwt.interfaces.Claim;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -54,7 +54,7 @@ public class JwtProvider {
 
     }
 
-    public Long checkToken(String token){
+    public long checkToken(String token){
         try{
             Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
 
@@ -65,11 +65,10 @@ public class JwtProvider {
 
             Map<String, Claim> payload = verifier.getClaims();
 
-            Long accountPlatformId = Long.parseLong(payload.get("id").toString());
-
-            return accountPlatformId;
+            long accountId = Long.parseLong(payload.get("id").asString());
+            return accountId;
         }catch (JWTVerificationException e){
-            return null;
+            throw new AccessDeniedException("접근권한이 없습니다.");
         }
     }
 }
