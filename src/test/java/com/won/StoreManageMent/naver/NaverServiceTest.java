@@ -1,25 +1,34 @@
 package com.won.StoreManageMent.naver;
 
+import com.sun.net.httpserver.spi.HttpServerProvider;
 import com.won.StoreManageMent.auth.entity.AccountEntity;
 import com.won.StoreManageMent.common.jwt.AccountContext;
 import com.won.StoreManageMent.naver.dto.RequestNaverSellerInfo;
 import com.won.StoreManageMent.naver.dto.RequestNaverSellerInfo.*;
 import com.won.StoreManageMent.naver.dto.RequestProductList;
 import com.won.StoreManageMent.naver.dto.ResponseProductList;
+import com.won.StoreManageMent.naver.dto.ResponseTags;
 import com.won.StoreManageMent.naver.entity.*;
 import com.won.StoreManageMent.naver.repository.*;
 import com.won.StoreManageMent.naver.service.NaverApiServiceImpl;
 import com.won.StoreManageMent.naver.service.NaverInfoManageServiceImpl;
+import com.won.StoreManageMent.naver.vo.NaverTagsVo;
+import net.minidev.json.JSONArray;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 
+import java.net.http.HttpClient;
+import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -53,6 +62,9 @@ public class NaverServiceTest {
 
     @Mock
     private AccountContext accountContext;
+
+    @Mock
+    private HttpClient httpClient;
 
     @InjectMocks
     private NaverInfoManageServiceImpl naverInfoService;
@@ -223,5 +235,26 @@ public class NaverServiceTest {
 //        THEN
         assertNotNull(result);
         assertSame(productPage.getContent().size(), result.getList().size());
+    }
+
+    @Test
+    public void getSearchTagsService()throws  Exception{
+//        GIVEN
+        String keyword = "자전거";
+
+        List<NaverTagsVo> apiResult = Arrays.asList(new NaverTagsVo(1, "testTag"));
+        String resposneDat = JSONArray.toJSONString(apiResult);
+
+        HttpResponse<String> httpResponse = mock(HttpResponse.class);
+
+        given(httpClient.send(any(), ArgumentMatchers.<HttpResponse.BodyHandler<String>>any())).willReturn(httpResponse);
+        given(httpResponse.body()).willReturn(resposneDat);
+
+
+//        WHEN
+        ResponseTags result = naverApiService.searchTags(keyword);
+
+//        THEN
+        assertSame(result.getTags().size(), apiResult.size());
     }
 }

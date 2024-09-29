@@ -18,6 +18,7 @@ import com.won.StoreManageMent.common.jwt.AccountContext;
 import com.won.StoreManageMent.naver.dto.*;
 import com.won.StoreManageMent.naver.entity.ProductEntity;
 import com.won.StoreManageMent.naver.repository.ProductRepository;
+import com.won.StoreManageMent.naver.vo.NaverTagsVo;
 import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -204,7 +205,7 @@ public class NaverApiServiceImpl implements NaverApiService {
         String REQUEST_API = "https://api.commerce.naver.com/external/v1/product-models?name=" + keyword;
 
         try {
-            
+
             ResponseAuthToken token = this.newAuthToken();
 
             HttpRequest request = HttpRequest.newBuilder()
@@ -268,6 +269,35 @@ public class NaverApiServiceImpl implements NaverApiService {
                 .totalCount(res.getTotalPages())
                 .build();
 
+    }
+
+    @Override
+    public ResponseTags searchTags(String keyword){
+
+        String REQUEST_API = "https://api.commerce.naver.com/external/v2/tags/recommend-tags?keyword=" + keyword;
+
+        try {
+
+            ResponseAuthToken token = this.newAuthToken();
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(REQUEST_API))
+                    .header("content-type", "application/json")
+                    .header("Authorization", "Bearer " + token.getAccessToken())
+                    .GET()
+                    .build();
+
+            String res = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            List<NaverTagsVo> naverCategory = objectMapper.readValue(res, List.class);
+
+            return new ResponseTags(naverCategory);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseTags(Arrays.asList());
+        }
     }
 
 

@@ -60,4 +60,11 @@ public class NaverController {
         ResponseProductList productList = naverApiService.productList(requestProductList);
         return ResponseEntity.status(HttpStatus.OK).body(productList);
     }
+
+    @Auth
+    @GetMapping("/tag")
+    public ResponseEntity<ResponseTags> searchTag(@RequestParam("keyword") String keyword ){
+        ResponseTags responseTags = naverApiService.searchTags(keyword);
+        return ResponseEntity.status(HttpStatus.OK).body(responseTags);
+    }
 }

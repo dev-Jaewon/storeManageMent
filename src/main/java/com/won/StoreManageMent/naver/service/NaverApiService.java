@@ -11,4 +11,5 @@ public interface NaverApiService {
     public ResponseOriginProducts originProducts(NaverProductsDto naverProductsDto);
     public ResponseCategory getCategoryInfo(String keyword);
     public ResponseProductList productList(RequestProductList requestProductList);
+    public ResponseTags searchTags(String keyword);
 }
