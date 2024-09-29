@@ -9,4 +9,5 @@ public interface NaverAuthService {
     public void insertAuthKeyInfo(PlatFormInfoDto.InsertFlatFormAuthInfo insertFloatFormAuthKey);
     public void updateAuthKeyInfo(PlatFormInfoDto.UpdateFlatFormAuthInfo insertFloatFormAuthKey);
     public ResponseAccount getAccountInfo();
+    public ResponseAuthToken getNewAccessToken();
 }

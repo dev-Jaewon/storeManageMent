@@ -7,7 +7,8 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import com.won.StoreManageMent.common.jwt.JwtProvider;
@@ -34,28 +35,36 @@ public class AuthAspect {
         String Authorization = request.getHeader("Authorization");
 
         if (Authorization == null || !Authorization.startsWith("Bearer ")) {
-            throw new AccessDeniedException("접근권한이 없습니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED);
         }
 
-        String token = Authorization.substring(7);
-        long accountId = jwtProvider.checkToken(token);
+        try {
 
-        AccountEntity account = accountRepository.findById(accountId)
-                .orElse(null);
+            String token = Authorization.substring(7);
 
-        if (account == null){
-            throw new AccessDeniedException("접근권한이 없습니다.");
+            long accountId = jwtProvider.checkToken(token);
+
+            AccountEntity account = accountRepository.findById(accountId)
+                    .orElse(null);
+
+            if (account == null){
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED);
+            }
+
+            // accessToken 계정 로컬 쓰레드 등록
+            accountContext.setAccount(account);
+
+            // API 함수 실행
+            Object excuteFunction = joinPoint.proceed();
+
+            // accessToken 계정 로컬 쓰레드 클리어
+            accountContext.removeAccount();
+
+            return excuteFunction;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(401).body("인증실패하였습니다.");
         }
-
-        // accessToken 계정 로컬 쓰레드 등록
-        accountContext.setAccount(account);
-
-        // API 함수 실행
-        Object excuteFunction = joinPoint.proceed();
-
-        // accessToken 계정 로컬 쓰레드 클리어
-        accountContext.removeAccount();
-
-        return excuteFunction;
     }
 }

@@ -52,4 +52,11 @@ public class NaverAuthController {
         ResponseAccount accountInfo = naverAuthService.getAccountInfo();
         return ResponseEntity.status(HttpStatus.CREATED).body(accountInfo);
     }
+
+    @Auth
+    @GetMapping("/newToken")
+    public ResponseEntity<ResponseAuthToken> getNewAccessToken(){
+        ResponseAuthToken newToken = naverAuthService.getNewAccessToken();
+        return ResponseEntity.status(HttpStatus.CREATED).body(newToken);
+    }
 }

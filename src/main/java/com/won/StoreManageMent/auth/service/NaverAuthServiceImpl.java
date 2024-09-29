@@ -7,9 +7,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-import com.won.StoreManageMent.auth.dto.JwtPayLoadDto;
+import com.won.StoreManageMent.auth.dto.*;
 import com.won.StoreManageMent.auth.dto.JwtPayLoadDto.ResponseAuthToken;
-import com.won.StoreManageMent.auth.dto.ResponseAccount;
 import com.won.StoreManageMent.common.jwt.AccountContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,8 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.won.StoreManageMent.auth.dto.NaverAuthDto;
-import com.won.StoreManageMent.auth.dto.PlatFormInfoDto;
 import com.won.StoreManageMent.auth.entity.AccountEntity;
 import com.won.StoreManageMent.auth.entity.PlatFormEntity;
 import com.won.StoreManageMent.auth.entity.StoreAuthInfoEntity;
@@ -148,5 +145,18 @@ public class NaverAuthServiceImpl implements NaverAuthService {
                 .id(account.getId())
                 .nickName(account.getNickName())
                 .build();
+    }
+
+    @Override
+    public ResponseAuthToken getNewAccessToken(){
+        AccountEntity account = accountContext.getAccount();
+
+        JwtPayLoadDto.Playload jwtPlayLoad = JwtPayLoadDto.Playload.builder()
+                .id(account.getId())
+                .nickName(account.getNickName())
+                .platformId(account.getPlatformId())
+                .build();
+
+         return jwtService.createToken(jwtPlayLoad);
     }
 }
