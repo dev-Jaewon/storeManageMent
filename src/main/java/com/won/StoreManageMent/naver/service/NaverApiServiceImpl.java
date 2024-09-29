@@ -1,7 +1,6 @@
 package com.won.StoreManageMent.naver.service;
 
-import java.util.ArrayList;
-import java.util.Base64;
+import java.util.*;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -10,14 +9,22 @@ import java.nio.charset.StandardCharsets;
 import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 
+import com.won.StoreManageMent.auth.entity.AccountEntity;
+import com.won.StoreManageMent.common.jwt.AccountContext;
 import com.won.StoreManageMent.naver.dto.*;
+import com.won.StoreManageMent.naver.entity.ProductEntity;
+import com.won.StoreManageMent.naver.repository.ProductRepository;
 import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,9 +48,16 @@ public class NaverApiServiceImpl implements NaverApiService {
     @Value("${naver.clientSecretKey}")
     private String CLIENT_SECRET_KEY;
 
-    private final int IMAGE_SIZE = 1000;
+    private int IMAGE_SIZE = 1000;
 
-    private final HttpClient httpClient;
+    @Autowired
+    private HttpClient httpClient;
+
+    @Autowired
+    private AccountContext accountContext;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     @Override
     public ResponseAuthToken newAuthToken(){
@@ -211,6 +225,49 @@ public class NaverApiServiceImpl implements NaverApiService {
             e.printStackTrace();
             return new ResponseCategory();
         }
+    }
+
+    @Override
+    public ResponseProductList productList(RequestProductList requestProductList){
+
+        Pageable pageable = PageRequest.of(
+                requestProductList.getPage(),
+                requestProductList.getSize(),
+                Sort.by(
+                        Sort.Order.desc("id")
+                ));
+
+        AccountEntity account = accountContext.getAccount();
+
+        Page<ProductEntity> res =  productRepository.findByAccount(account, pageable);
+
+        List<ResponseProductList.Product> products = res.getContent()
+                .stream()
+                .map(product->ResponseProductList.Product
+                        .builder()
+                        .id(product.getId())
+                        .price(product.getPrice())
+                        .image(product.getImage())
+                        .title(product.getTitle())
+                        .linkProduct(product.getLinkProduct())
+                        .linkStore(product.getLinkStore())
+                        .createat(product.getCreateat())
+                        .margin(
+//                                마진률
+                                (int)((product.getPrice() * 0.9426 - Integer.parseInt(product.getIncomPrice())) / product.getPrice() * 100))
+                        .profit(
+//                                수익가격
+                                (int)(product.getPrice() * 0.9426 - Integer.parseInt(product.getIncomPrice()))
+                        )
+                        .build())
+                .collect(Collectors.toList());
+
+        return ResponseProductList.builder()
+                .list(products)
+                .lastPage(res.getTotalPages())
+                .totalCount(res.getTotalPages())
+                .build();
+
     }
 
 

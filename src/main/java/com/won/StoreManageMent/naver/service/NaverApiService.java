@@ -10,4 +10,5 @@ public interface NaverApiService {
     public ResponseUploadImage imageFreeHosting(ArrayList<MultipartFile> files);
     public ResponseOriginProducts originProducts(NaverProductsDto naverProductsDto);
     public ResponseCategory getCategoryInfo(String keyword);
+    public ResponseProductList productList(RequestProductList requestProductList);
 }

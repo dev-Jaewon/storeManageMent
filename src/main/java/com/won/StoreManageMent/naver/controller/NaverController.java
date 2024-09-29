@@ -53,4 +53,11 @@ public class NaverController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
+
+    @Auth
+    @GetMapping("/product")
+    public ResponseEntity<ResponseProductList> productList(@ModelAttribute RequestProductList requestProductList){
+        ResponseProductList productList = naverApiService.productList(requestProductList);
+        return ResponseEntity.status(HttpStatus.OK).body(productList);
+    }
 }

@@ -4,8 +4,11 @@ import com.won.StoreManageMent.auth.entity.AccountEntity;
 import com.won.StoreManageMent.common.jwt.AccountContext;
 import com.won.StoreManageMent.naver.dto.RequestNaverSellerInfo;
 import com.won.StoreManageMent.naver.dto.RequestNaverSellerInfo.*;
+import com.won.StoreManageMent.naver.dto.RequestProductList;
+import com.won.StoreManageMent.naver.dto.ResponseProductList;
 import com.won.StoreManageMent.naver.entity.*;
 import com.won.StoreManageMent.naver.repository.*;
+import com.won.StoreManageMent.naver.service.NaverApiServiceImpl;
 import com.won.StoreManageMent.naver.service.NaverInfoManageServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,10 +16,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.*;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class NaverServiceTest {
@@ -40,10 +49,16 @@ public class NaverServiceTest {
     private ProductInfoProvidedNoticeRepository productInfoProvidedNoticeRepository;
 
     @Mock
+    private ProductRepository productRepository;
+
+    @Mock
     private AccountContext accountContext;
 
     @InjectMocks
     private NaverInfoManageServiceImpl naverInfoService;
+
+    @InjectMocks
+    private NaverApiServiceImpl naverApiService;
 
     @BeforeEach
     public void setRequestNaverSellerInfo(){
@@ -148,5 +163,65 @@ public class NaverServiceTest {
 
 //      Then
         assertSame(result, "성공적으로 등록되었습니다.");
+    }
+
+    @Test
+    public void checkProductList(){
+
+        RequestProductList requestProductList = RequestProductList.builder()
+                .page(0)
+                .size(10)
+                .titleKeyword("asdf")
+                .build();
+
+        Pageable pageable = PageRequest.of(
+                requestProductList.getPage(),
+                requestProductList.getSize(),
+                Sort.by(
+                        Sort.Order.desc("id")
+                ));
+
+        AccountEntity account = AccountEntity.builder()
+                .id(0L)
+                .platform("naver")
+                .platformId("012345")
+                .nickName("testMan")
+                .profileImage("http://abcde")
+                .build();
+
+        given(accountContext.getAccount()).willReturn(account);
+
+        ProductEntity productInfo = ProductEntity.builder()
+                .id(1)
+                .brand("sams")
+                .title("컴퓨터")
+                .price(10000)
+                .image("http://image")
+                .detailText("detailInfo")
+                .category("categoryInfo")
+                .tags(Arrays.asList("tag1", "tag2"))
+                .createat(LocalDateTime.now())
+                .updateat(LocalDateTime.now())
+                .linkStore("linkStore")
+                .linkProduct("linkProduct")
+                .incomPrice("1000")
+                .account(account)
+                .originPrice(1000)
+                .currency("currency")
+                .weight(100.1)
+                .crawlingOptionColor("crawlingOptionColor")
+                .originProductNo("originProductNo")
+                .build();
+
+        Page<ProductEntity> productPage = new PageImpl<>(Arrays.asList(productInfo), pageable, pageable.getPageSize());
+
+        given(productRepository.findByAccount(account, pageable)).willReturn(productPage);
+
+//        WHEN
+        ResponseProductList result = naverApiService.productList(requestProductList);
+
+//        THEN
+        assertNotNull(result);
+        assertSame(productPage.getContent().size(), result.getList().size());
     }
 }
