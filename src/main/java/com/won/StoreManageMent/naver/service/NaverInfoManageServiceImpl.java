@@ -1,14 +1,22 @@
 package com.won.StoreManageMent.naver.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.won.StoreManageMent.common.jwt.AccountContext;
 import com.won.StoreManageMent.naver.dto.RequestNaverSellerInfo;
 import com.won.StoreManageMent.naver.dto.RequestNaverSellerInfo.*;
+import com.won.StoreManageMent.naver.dto.ResponseCurrencyExchange;
 import com.won.StoreManageMent.naver.entity.*;
 import com.won.StoreManageMent.naver.repository.*;
+import com.won.StoreManageMent.naver.vo.ExchangeCurrencyVo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +42,9 @@ public class NaverInfoManageServiceImpl implements NaverInfoManageService {
 
     @Autowired
     private AccountContext accountContext;
+
+    @Autowired
+    private HttpClient httpClient;
 
     @Override
     @Transactional
@@ -117,5 +128,37 @@ public class NaverInfoManageServiceImpl implements NaverInfoManageService {
         }
 
         return "성공적으로 등록되었습니다.";
+    }
+
+    @Override
+    public ResponseCurrencyExchange getCurrencyExchange(String country){
+        final int PAGE = 1;
+        final int perPage = 1;
+
+        String REQUEST_API = "https://finance.daum.net/api/exchanges/FRX.KRW" + country +
+                "/days?symbolCode=FRX.KRW" + country +
+                "&terms=days&page=" + PAGE + "&perPage=" + perPage;
+
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(REQUEST_API))
+                    .header("referer", "https://finance.daum.net/exchanges/FRX.KRW" + country)
+                    .header("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36")
+                    .GET()
+                    .build();
+
+            String res = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            ExchangeCurrencyVo naverCategory = objectMapper.readValue(res, ExchangeCurrencyVo.class);
+
+            double changePrice = Math.round(naverCategory.getData().get(0).getTtSellingPrice() / 100 * 100) / 100.0;
+
+            return new ResponseCurrencyExchange(changePrice);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseCurrencyExchange(0);
+        }
     }
 }

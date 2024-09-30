@@ -67,4 +67,9 @@ public class NaverController {
         return naverApiService.searchCategory(keyword);
     }
 
+    @GetMapping("/currency-exchange-rate")
+    public ResponseEntity<ResponseCurrencyExchange> currencyExchangeRate(@RequestParam("country") String country){
+        ResponseCurrencyExchange resultCurrencyExchange = naverInfoManageService.getCurrencyExchange(country);
+        return ResponseEntity.status(HttpStatus.OK).body(resultCurrencyExchange);
+    }
 }
