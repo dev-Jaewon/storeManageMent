@@ -12,4 +12,5 @@ public interface NaverApiService {
     public ResponseCategory getCategoryInfo(String keyword);
     public ResponseProductList productList(RequestProductList requestProductList);
     public ResponseTags searchTags(String keyword);
+    public Object searchCategory(String keyword);
 }

@@ -67,4 +67,10 @@ public class NaverController {
         ResponseTags responseTags = naverApiService.searchTags(keyword);
         return ResponseEntity.status(HttpStatus.OK).body(responseTags);
     }
+
+    @GetMapping("/category")
+    public Object searchCategory(@RequestParam("keyword") String keyword){
+        return naverApiService.searchCategory(keyword);
+    }
+
 }
