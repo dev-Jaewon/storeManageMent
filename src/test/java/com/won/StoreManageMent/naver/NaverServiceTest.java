@@ -1,6 +1,5 @@
 package com.won.StoreManageMent.naver;
 
-import com.sun.net.httpserver.spi.HttpServerProvider;
 import com.won.StoreManageMent.auth.entity.AccountEntity;
 import com.won.StoreManageMent.common.jwt.AccountContext;
 import com.won.StoreManageMent.naver.dto.RequestNaverSellerInfo;
@@ -14,13 +13,11 @@ import com.won.StoreManageMent.naver.service.NaverApiServiceImpl;
 import com.won.StoreManageMent.naver.service.NaverInfoManageServiceImpl;
 import com.won.StoreManageMent.naver.vo.NaverTagsVo;
 import net.minidev.json.JSONArray;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 
@@ -72,15 +69,10 @@ public class NaverServiceTest {
     @InjectMocks
     private NaverApiServiceImpl naverApiService;
 
-    @BeforeEach
-    public void setRequestNaverSellerInfo(){
-        naverSellerInfo = NaverRequestParam.getRequestNaverSellerInfo();
-    }
-
-    private RequestNaverSellerInfo naverSellerInfo;
-
     @Test
     public void checkUpdateDeliveryInfoMethod(){
+        RequestNaverSellerInfo naverSellerInfo = NaverRequestParam.getRequestNaverSellerInfo();
+
         ClaimDeliveryInfo requestClaimDeliveryInfo = naverSellerInfo.getClaimDeliveryInfo();
 
         ClaimDeliveryInfoEntity claimDeliveryInfo = ClaimDeliveryInfoEntity.builder()
@@ -238,7 +230,7 @@ public class NaverServiceTest {
     }
 
     @Test
-    public void getSearchTagsService()throws  Exception{
+    public void getSearchTagsService()throws Exception{
 //        GIVEN
         String keyword = "자전거";
 
