@@ -38,12 +38,6 @@ public class NaverController {
     }
 
     @Auth
-    @GetMapping("/category")
-    public ResponseCategory naverCategoryInfo(@RequestParam("keyword") String keyword){
-        return naverApiService.getCategoryInfo(keyword);
-    }
-
-    @Auth
     @PostMapping("/sellerInfo")
     public ResponseEntity<String> insertNaverSellerInfo(@RequestParam(required = false) RequestNaverSellerInfo requestNaverSellerInfo){
         try{

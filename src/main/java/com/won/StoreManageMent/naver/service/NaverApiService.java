@@ -9,7 +9,6 @@ public interface NaverApiService {
     public ResponseAuthToken newAuthToken();
     public ResponseUploadImage imageFreeHosting(ArrayList<MultipartFile> files);
     public ResponseOriginProducts originProducts(NaverProductsDto naverProductsDto);
-    public ResponseCategory getCategoryInfo(String keyword);
     public ResponseProductList productList(RequestProductList requestProductList);
     public ResponseTags searchTags(String keyword);
     public Object searchCategory(String keyword);

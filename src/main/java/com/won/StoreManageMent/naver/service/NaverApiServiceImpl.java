@@ -201,35 +201,6 @@ public class NaverApiServiceImpl implements NaverApiService {
     }
     
     @Override
-    public ResponseCategory getCategoryInfo(String keyword){
-
-        String REQUEST_API = "https://api.commerce.naver.com/external/v1/product-models?name=" + keyword;
-
-        try {
-
-            ResponseAuthToken token = this.newAuthToken();
-
-            HttpRequest request = HttpRequest.newBuilder()
-                        .uri(new URI(REQUEST_API))
-                        .header("content-type", "application/json")
-                        .header("Authorization", "Bearer " + token.getAccessToken())
-                        .GET()
-                        .build();
-
-            String res = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
-
-            ObjectMapper objectMapper = new ObjectMapper();
-            ResponseCategory naverCategory = objectMapper.readValue(res, ResponseCategory.class);
-
-            return naverCategory;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseCategory();
-        }
-    }
-
-    @Override
     public ResponseProductList productList(RequestProductList requestProductList){
 
         Pageable pageable = PageRequest.of(
