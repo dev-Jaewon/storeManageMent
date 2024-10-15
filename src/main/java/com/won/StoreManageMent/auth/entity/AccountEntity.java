@@ -16,15 +16,18 @@ public class AccountEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String platform;
-
-    @Column(name = "platform_id", nullable = false)
-    private String platformId;
+    @Column(name = "naver_id", nullable = true)
+    private String naverId;
 
     @Column(name = "nickname", nullable = false)
     private String nickName;
 
-    @Column(name = "profile_image", nullable = false)
+    @Column(name = "profile_image", nullable = true)
     private String profileImage;
+
+    @Column(name = "account_id", nullable = true)
+    private String accountId;
+
+    @Column(name = "password", nullable = true)
+    private String password;
 }

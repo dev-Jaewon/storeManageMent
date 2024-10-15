@@ -36,7 +36,7 @@ public class NaverAuthController {
 
     @Auth
     @PostMapping("/flatForm")
-    public void insertFloatFormAuthKeyInfo(@RequestBody PlatFormInfoDto.InsertFlatFormAuthInfo insertFlatFormAuthInfo){
+    public void insertFloatFormAuthKeyInfo(@RequestBody PlatFormInfoDto.InsertFlatFormAuthInfo insertFlatFormAuthInfo) {
         naverAuthService.insertAuthKeyInfo(insertFlatFormAuthInfo);
     }
 

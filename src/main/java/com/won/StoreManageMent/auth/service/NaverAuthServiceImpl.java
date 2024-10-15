@@ -68,16 +68,12 @@ public class NaverAuthServiceImpl implements NaverAuthService {
 
             NaverAuthDto.NaverUserInfoResponse naverAuthInfo = naverAuthDto.getResponse();
 
-            AccountEntity account = accountRepository.findByPlatformId(naverAuthInfo.getId());
+            AccountEntity account = accountRepository.findByNaverId(naverAuthInfo.getId());
 
-//            if(userInfo == null){
-//                return null;
-//            }
-//
             JwtPayLoadDto.Playload jwtPlayLoad = JwtPayLoadDto.Playload.builder()
                     .id(account.getId())
                     .nickName(account.getNickName())
-                    .platformId(account.getPlatformId())
+                    .platformId(account.getNaverId())
                     .build();
 
             return jwtService.createToken(jwtPlayLoad);
@@ -144,6 +140,7 @@ public class NaverAuthServiceImpl implements NaverAuthService {
         return ResponseAccount.builder()
                 .id(account.getId())
                 .nickName(account.getNickName())
+                .userImage(account.getProfileImage())
                 .build();
     }
 
@@ -154,7 +151,7 @@ public class NaverAuthServiceImpl implements NaverAuthService {
         JwtPayLoadDto.Playload jwtPlayLoad = JwtPayLoadDto.Playload.builder()
                 .id(account.getId())
                 .nickName(account.getNickName())
-                .platformId(account.getPlatformId())
+                .platformId(account.getNaverId())
                 .build();
 
          return jwtService.createToken(jwtPlayLoad);

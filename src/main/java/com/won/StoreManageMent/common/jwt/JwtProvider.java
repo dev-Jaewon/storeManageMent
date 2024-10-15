@@ -68,7 +68,6 @@ public class JwtProvider {
             long accountId = Long.parseLong(payload.get("id").asString());
             return accountId;
         }catch (JWTVerificationException e){
-            e.printStackTrace();
             throw new AuthenticationException();
         }
     }

@@ -63,7 +63,6 @@ public class AuthAspect {
             return excuteFunction;
 
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.status(401).body("인증실패하였습니다.");
         }
     }

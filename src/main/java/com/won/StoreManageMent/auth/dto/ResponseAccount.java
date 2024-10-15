@@ -10,4 +10,5 @@ import lombok.Setter;
 public class ResponseAccount {
     private long id;
     private String nickName;
+    private String userImage;
 }
