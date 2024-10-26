@@ -26,9 +26,6 @@ public class ProductEntity {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "price", nullable = false)
-    private int price;
-
     @Column(name = "image", nullable = true)
     private String image;
 
@@ -60,18 +57,16 @@ public class ProductEntity {
     @JoinColumn(name = "account_id", nullable = false)
     private AccountEntity account;
 
-    @Column(name = "origin_price", nullable = true)
-    private int originPrice;
-
-    @Column(name = "currency", nullable = false)
-    private String currency;
-
     @Column(name = "weight", nullable = false)
     private double weight;
 
-    @Column(name = "crawling_option_color", nullable = false)
+    @Column(name = "crawling_option_color", nullable = true)
     private String crawlingOptionColor;
 
-    @Column(name = "originproductno", nullable = false)
+    @Column(name = "originproductno", nullable = true)
     private String originProductNo;
+
+    @OneToOne
+    @JoinColumn(name = "price_id", nullable = true)
+    private PriceEntity price;
 }

@@ -219,7 +219,7 @@ public class NaverApiServiceImpl implements NaverApiService {
                 .map(product->ResponseProductList.Product
                         .builder()
                         .id(product.getId())
-                        .price(product.getPrice())
+                        .price(product.getPrice().getKrwPrice())
                         .image(product.getImage())
                         .title(product.getTitle())
                         .linkProduct(product.getLinkProduct())
@@ -227,10 +227,13 @@ public class NaverApiServiceImpl implements NaverApiService {
                         .createat(product.getCreateat())
                         .margin(
 //                                마진률
-                                (int)((product.getPrice() * 0.9426 - Integer.parseInt(product.getIncomPrice())) / product.getPrice() * 100))
+                                product.getPrice().getMargin()
+//                                (int)((product.getPrice() * 0.9426 - Integer.parseInt(product.getIncomPrice())) / product.getPrice() * 100))
+                        )
                         .profit(
 //                                수익가격
-                                (int)(product.getPrice() * 0.9426 - Integer.parseInt(product.getIncomPrice()))
+                                product.getPrice().getProfit()
+//                                (int)(product.getPrice() * 0.9426 - Integer.parseInt(product.getIncomPrice()))
                         )
                         .build())
                 .collect(Collectors.toList());
